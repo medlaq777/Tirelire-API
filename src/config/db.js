@@ -12,3 +12,4 @@ const connectDB = async () => {
   console.log("OK");
   return instance;
 };
+module.exports.connectDB();
