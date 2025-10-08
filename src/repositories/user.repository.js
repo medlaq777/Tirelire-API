@@ -1,15 +1,15 @@
-const userModel = require("../models/user.model");
+import userModel from "../models/user.model.js";
 
 class UserRepository {
-  async createUser(userData) {
+  async create(userData) {
     const user = new userModel(userData);
     return user.save();
   }
-  async findUserByEmail(email) {
+  async findByEmail(email) {
     return userModel.findOne({ email }).exec();
   }
 
-  async findUserById(id) {
+  async findById(id) {
     return userModel.findById(id).exec();
   }
 
@@ -19,4 +19,4 @@ class UserRepository {
   }
 }
 
-module.exports = new UserRepository();
+export default new UserRepository();

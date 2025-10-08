@@ -1,11 +1,11 @@
-const bycrypt = require("bcryptjs");
-const userRepo = require("../repositories/user.repository");
-const jwt = require("../utils/jwt");
-const config = require("../config/config");
+import bcrypt from "bcryptjs";
+import userRepo from "../repositories/user.repository.js";
+import jwt from "../utils/jwt.js";
+import config from "../config/config.js";
 
 class AuthService {
-  constructor(userRepo) {
-    this.userRepo = userRepo;
+  constructor(userRepoInstance) {
+    this.userRepo = userRepoInstance;
   }
   async register({ email, password }) {
     if (!email || !password) {
@@ -62,4 +62,5 @@ class AuthService {
     return rest;
   }
 }
-module.exports = new AuthService(userRepo);
+
+export default new AuthService(userRepo);

@@ -1,4 +1,5 @@
-const jwt = require("jsonwebtoken");
+import jwt from "../utils/jwt.js";
+
 class AuthMiddleware {
   static protect(req, res, next) {
     try {
@@ -9,7 +10,7 @@ class AuthMiddleware {
         throw err;
       }
       const token = header.split(" ")[1];
-      const payload = jwt.verify(token);
+      const payload = jwt.verifyToken(token);
       req.user = payload;
       next();
     } catch (err) {
@@ -17,4 +18,5 @@ class AuthMiddleware {
     }
   }
 }
-module.exports = AuthMiddleware;
+
+export default AuthMiddleware;

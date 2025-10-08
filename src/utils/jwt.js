@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const config = require("../config/config");
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
 
 class jwtUtils {
   static generateToken(payload) {
@@ -12,4 +12,4 @@ class jwtUtils {
     return jwt.verify(token, config.jwtSecret);
   }
 }
-module.exports = jwtUtils;
+export default jwtUtils;

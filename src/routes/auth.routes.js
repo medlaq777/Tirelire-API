@@ -1,6 +1,6 @@
-const express = require("express");
-const authController = require("../controllers/auth.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+import express from "express";
+import authController from "../controllers/auth.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 class AuthRoutes {
   static build() {
@@ -16,4 +16,4 @@ class AuthRoutes {
   }
 }
 
-module.exports = AuthRoutes;
+export default AuthRoutes;

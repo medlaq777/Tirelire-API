@@ -1,16 +1,16 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const config = require("./config/config");
-const db = require("./config/db");
-const authRoutes = require("./routes/auth.routes");
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import config from "./config/config.js";
+import db from "./config/db.js";
+import authRoutes from "./routes/auth.routes.js";
 
 (async () => {
   const app = express();
   app.use(cors());
   app.use(express.json());
   await db.connect();
-  app.use("/api/auth", authRoutes.build());
+  app.use("/api", authRoutes.build());
   app.use((err, req, res, next) => {
     console.log(err);
     const status = err.status || 500;
@@ -18,5 +18,7 @@ const authRoutes = require("./routes/auth.routes");
   });
 
   const port = config.port;
-  app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
+  app.listen(port, () =>
+    console.log(`🚀 Server running on port http://localhost:${port}`)
+  );
 })();

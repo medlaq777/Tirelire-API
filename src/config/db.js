@@ -1,20 +1,17 @@
-const mongoose = require("mongoose");
-const config = require("./config");
+import mongoose from "mongoose";
+import config from "./config.js";
 
 class database {
   constructor() {
-    this.connect = false;
+    this.connected = false;
   }
-  async connectDB() {
-    if (this.connect) return;
+  async connect() {
+    if (this.connected) return;
     if (!config.mongoUri) throw new Error("MongoDB URI not provided in config");
     try {
-      await mongoose.connect(config.mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      this.connect = true;
-      console.log("OK");
+      await mongoose.connect(config.mongoUri);
+      this.connected = true;
+      console.log("MongoDB connected");
     } catch (err) {
       console.error("mongoDB connection error:", err);
       throw err;
@@ -22,4 +19,4 @@ class database {
   }
 }
 
-module.exports = new database();
+export default new database();
