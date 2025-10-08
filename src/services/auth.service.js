@@ -1,13 +1,12 @@
 import bcrypt from "bcryptjs";
 import userRepo from "../repositories/user.repository.js";
 import jwt from "../utils/jwt.js";
-import config from "../config/config.js";
 
 class AuthService {
   constructor(userRepoInstance) {
     this.userRepo = userRepoInstance;
   }
-  async register({ email, password }) {
+  async register({ fullName, email, password }) {
     if (!email || !password) {
       const err = new Error("Email and Password are required");
       err.status = 400;
@@ -20,8 +19,16 @@ class AuthService {
       throw err;
     }
     const hashed = await bcrypt.hash(password, 10);
-    const user = await this.userRepo.create({ email, password: hashed });
-    const token = jwt.generateToken({ id: user.id, email: user.email });
+    const user = await this.userRepo.create({
+      fullName,
+      email,
+      password: hashed,
+    });
+    const token = jwt.generateToken({
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+    });
     return { user: this.sanitize(user), token };
   }
 
