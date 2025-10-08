@@ -1,23 +1,38 @@
 const authService = require("..services/auth.service");
 
-exports.register = async (req, res) => {
-  try {
-    const result = await authService.register(req.body);
-    res.status(201).json(result);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+class AuthController {
+  constructor(service) {
+    this.service = service;
   }
-};
 
-exports.login = async (req, res) => {
-  try {
-    const result = await authService.login(req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  async register(req, res, next) {
+    try {
+      const payload = req.body;
+      const result = await this.service.register(payload);
+      res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
   }
-};
 
-exports.profile = async (req, res) => {
-  res.json({ message: `welcome ${req.user.email}`, user: req.user });
-};
+  async login(req, res, next) {
+    try {
+      const payload = req.body;
+      const result = await this.service.login(payload);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async profile(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const user = await this.service.profile(userId);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
+}
+module.exports = new AuthController(authService);
