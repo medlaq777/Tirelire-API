@@ -1,14 +1,19 @@
 const express = require("express");
-const router = express.Router();
 const authController = require("../controllers/auth.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
-router.post("/register", authController.register.bind(authController));
-router.post("/login", authController.login.bind(authController));
-router.get(
-  "/profile",
-  authMiddleware,
-  authController.profile.bind(authController)
-);
+class AuthRoutes {
+  static build() {
+    const router = express.Router();
+    router.post("/register", authController.register.bind(authController));
+    router.post("/login", authController.login.bind(authController));
+    router.get(
+      "/profile",
+      authMiddleware.protect,
+      authController.profile.bind(authController)
+    );
+    return router;
+  }
+}
 
-module.exports = router;
+module.exports = AuthRoutes;
