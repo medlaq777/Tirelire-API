@@ -1,7 +1,10 @@
-require("dotenv").config();
+class config {
+  constructor() {
+    this.port = process.env.PORT;
+    this.mongoUri = process.env.MONGO_URI;
+    this.jwtSecret = process.env.JWT_SECRET;
+    this.jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+  }
+}
 
-module.exports = {
-  port: process.env.port,
-  mongoUri: process.env.MONGO_URI,
-  jwtSecret: process.env.JWR_SECRET,
-};
+module.exports = new config();
