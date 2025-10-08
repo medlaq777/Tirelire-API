@@ -1,13 +1,15 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 
-exports.generateToken = (user) => {
-  return jwt.sign(
-    {
-      id: user._id,
-      email: user.email,
-    },
-    config.jwtSecret,
-    { expiresIn: "1h" }
-  );
-};
+class jwtUtils {
+  static generateToken(payload) {
+    return jwt.sign(payload, config.jwtSecret, {
+      expiresIn: config.jwtExpiresIn,
+    });
+  }
+
+  static verifyToken(token) {
+    return jwt.verify(token, config.jwtSecret);
+  }
+}
+module.exports = jwtUtils;
