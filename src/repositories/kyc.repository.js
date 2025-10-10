@@ -22,3 +22,5 @@ class KycRepositroy {
     return Kyc.findById(id).exec();
   }
 }
+
+module.exports = new KycRepositroy();
