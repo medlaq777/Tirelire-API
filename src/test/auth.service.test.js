@@ -52,11 +52,11 @@ describe("AuthService.register", () => {
   const mockCreatedUser = {
     ...userData,
     id: "123",
-    password: "hashed_password",
+    password: "hassan@test.com",
     toObject: () => ({
       ...userData,
       id: "123",
-      password: "hashed_password",
+      password: "hassan@test.com",
       __v: 0,
     }),
   };
@@ -88,7 +88,7 @@ describe("AuthService.register", () => {
   it("successfully regiser new user and return user token", async () => {
     AuthService.userRepo = mockUserRepo;
     mockUserRepo.findByEmail.mockResolvedValueOnce(null);
-    bcrypt.hash.mockResolvedValue("hashed_password");
+    bcrypt.hash.mockResolvedValue("hassan@test.com");
     mockUserRepo.create.mockResolvedValue(mockCreatedUser);
     jwt.generateToken.mockReturnValue(mockToken);
     const result = await AuthService.register(userData);
@@ -97,7 +97,7 @@ describe("AuthService.register", () => {
     expect(mockUserRepo.create).toHaveBeenCalledWith({
       fullName: userData.fullName,
       email: userData.email,
-      password: "hashed_password",
+      password: "hassan@test.com",
     });
     expect(jwt.generateToken).toHaveBeenCalledWith({
       id: mockCreatedUser.id,
@@ -121,11 +121,11 @@ describe("AuthService.login", () => {
   const mockUser = {
     id: "123",
     email: userData.email,
-    password: "hashed_password",
+    password: "hassan@test.com",
     toObject: () => ({
       id: "123",
       email: userData.email,
-      password: "hashed_password",
+      password: "hassan@test.com",
       __v: 0,
     }),
   };
