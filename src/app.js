@@ -3,14 +3,16 @@ import express from "express";
 import cors from "cors";
 import config from "./config/config.js";
 import db from "./config/db.js";
-import authRoutes from "./routes/auth.routes.js";
+import auth from "./routes/auth.routes.js";
+import kyc from "./routes/kyc.routes.js";
 
 (async () => {
   const app = express();
   app.use(cors());
   app.use(express.json());
   await db.connect();
-  app.use("/api", authRoutes.build());
+  app.use("/api", auth.build());
+  app.use("/api/kyc", kyc.build());
   app.use((err, req, res, next) => {
     console.log(err);
     const status = err.status || 500;
