@@ -4,6 +4,7 @@ class config {
     this.mongoUri = process.env.MONGO_URI;
     this.jwtSecret = process.env.JWT_SECRET;
     this.jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+    this.fileEncryptionKey = process.env.FILE_ENCRYPTION_KEY;
   }
 }
 
