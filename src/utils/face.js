@@ -47,7 +47,7 @@ class Face {
 
   async compareImages(bufA, bufB, threshold = 0.6) {
     const descA = await this.getDescriptor(bufA);
-    const descB = await this.getDescriptor(bufb);
+    const descB = await this.getDescriptor(bufB);
     if (!descA || !descB)
       return { match: false, distance: null, reason: "face_not_detected" };
     const distance = Face.euclideanDistance(descA, descB);
