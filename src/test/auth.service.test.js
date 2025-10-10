@@ -113,4 +113,74 @@ describe("AuthService.register", () => {
   });
 });
 
+describe("AuthService.login", () => {
+  const userData = {
+    email: "hassan@test.com",
+    password: "hassan@test.com",
+  };
+  const mockUser = {
+    id: "123",
+    email: userData.email,
+    password: "hashed_password",
+    toObject: () => ({
+      id: "123",
+      email: userData.email,
+      password: "hashed_password",
+      __v: 0,
+    }),
+  };
+  const mockToken = "mocked-jwt-token";
+  it("throw 400 error if email or password is missing", async () => {
+    await expect(
+      AuthService.login({ email: "a@b.com", password: "" })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "Email and Password are required",
+    });
+    expect(mockUserRepo.findByEmail).not.toHaveBeenCalled();
+  });
 
+  it("throw 401 error if user is not found", async () => {
+    mockUserRepo.findByEmail.mockResolvedValueOnce(null);
+    await expect(AuthService.login(userData)).rejects.toMatchObject({
+      status: 401,
+      message: "Invalid email or password",
+    });
+    expect(mockUserRepo.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(bcrypt.compare).not.toHaveBeenCalled();
+  });
+
+  it("throw 401 error if password does not match", async () => {
+    mockUserRepo.findByEmail.mockResolvedValueOnce(mockUser);
+    bcrypt.compare.mockResolvedValue(false);
+    await expect(AuthService.login(userData)).rejects.toMatchObject({
+      status: 401,
+      message: "Invalid email or password",
+    });
+    expect(mockUserRepo.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      userData.password,
+      mockUser.password
+    );
+    expect(jwt.generateToken).not.toHaveBeenCalled();
+  });
+  it("Successfully login and return User Token", async () => {
+    mockUserRepo.findByEmail.mockResolvedValueOnce(mockUser);
+    bcrypt.compare.mockResolvedValue(true);
+    jwt.generateToken.mockReturnValue(mockToken);
+
+    const result = await AuthService.login(userData);
+
+    expect(mockUserRepo.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(bcrypt.compare).toHaveBeenCalledWith(
+      userData.password,
+      mockUser.password
+    );
+    expect(jwt.generateToken).toHaveBeenCalledWith({
+      id: mockUser.id,
+      email: mockUser.email,
+    });
+    expect(result.token).toBe(mockToken);
+    expect(result.user).toEqual({ id: "123", email: userData.email });
+  });
+});
