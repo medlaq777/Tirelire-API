@@ -1,0 +1,116 @@
+import {
+  jest,
+  describe,
+  it,
+  expect,
+  beforeEach,
+  beforeAll,
+} from "@jest/globals";
+
+jest.unstable_mockModule("bcryptjs", () => ({
+  default: {
+    hash: jest.fn(),
+    compare: jest.fn(),
+  },
+}));
+
+jest.unstable_mockModule("../utils/jwt.js", () => ({
+  default: {
+    generateToken: jest.fn(),
+  },
+}));
+
+let AuthService;
+let bcrypt;
+let jwt;
+const mockUserRepo = {
+  findByEmail: jest.fn(),
+  create: jest.fn(),
+  findById: jest.fn(),
+};
+
+beforeAll(async () => {
+  const bcryptMod = await import("bcryptjs");
+  bcrypt = bcryptMod.default || bcryptMod;
+  const jwtMod = await import("../utils/jwt.js");
+  jwt = jwtMod.default || jwtMod;
+  const authMod = await import("../services/auth.service.js");
+  AuthService = authMod.default;
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  AuthService.userRepo = mockUserRepo;
+});
+
+describe("AuthService.register", () => {
+  const userData = {
+    fullName: "hassan habchakalat",
+    email: "hassan@test.com",
+    password: "hassan@test.com",
+  };
+  const mockCreatedUser = {
+    ...userData,
+    id: "123",
+    password: "hashed_password",
+    toObject: () => ({
+      ...userData,
+      id: "123",
+      password: "hashed_password",
+      __v: 0,
+    }),
+  };
+  const mockToken = "mocked-jwt-token";
+  it("throw 400 error if email or password is missing", async () => {
+    await expect(
+      AuthService.register({
+        fullName: "Test",
+        email: "a@b.com",
+        password: "",
+      })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "Email and Password are required",
+    });
+    expect(mockUserRepo.findByEmail).not.toHaveBeenCalled();
+  });
+
+  it("throw 409 error if user already exists", async () => {
+    AuthService.userRepo = mockUserRepo;
+    mockUserRepo.findByEmail.mockResolvedValueOnce(mockCreatedUser);
+    await expect(AuthService.register(userData)).rejects.toMatchObject({
+      status: 409,
+      message: "User already exists",
+    });
+    expect(mockUserRepo.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(bcrypt.hash).not.toHaveBeenCalled();
+  });
+  it("successfully regiser new user and return user token", async () => {
+    AuthService.userRepo = mockUserRepo;
+    mockUserRepo.findByEmail.mockResolvedValueOnce(null);
+    bcrypt.hash.mockResolvedValue("hashed_password");
+    mockUserRepo.create.mockResolvedValue(mockCreatedUser);
+    jwt.generateToken.mockReturnValue(mockToken);
+    const result = await AuthService.register(userData);
+    expect(mockUserRepo.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(bcrypt.hash).toHaveBeenCalledWith(userData.password, 10);
+    expect(mockUserRepo.create).toHaveBeenCalledWith({
+      fullName: userData.fullName,
+      email: userData.email,
+      password: "hashed_password",
+    });
+    expect(jwt.generateToken).toHaveBeenCalledWith({
+      id: mockCreatedUser.id,
+      fullName: mockCreatedUser.fullName,
+      email: mockCreatedUser.email,
+    });
+    expect(result.token).toBe(mockToken);
+    expect(result.user).toEqual({
+      id: "123",
+      fullName: userData.fullName,
+      email: userData.email,
+    });
+  });
+});
+
+
