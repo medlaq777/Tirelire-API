@@ -184,3 +184,34 @@ describe("AuthService.login", () => {
     expect(result.user).toEqual({ id: "123", email: userData.email });
   });
 });
+
+describe("AuthService.profile", () => {
+  const userId = "123";
+  const mockUser = {
+    id: userId,
+    email: "hassan@test.com",
+    password: "hassan@test.com",
+    toObject: () => ({
+      id: userId,
+      email: "hassan@test.com",
+      password: "hassan@test.com",
+      __v: 0,
+    }),
+  };
+  it("throw 404 error if user not found", async () => {
+    mockUserRepo.findById.mockResolvedValueOnce(null);
+    await expect(AuthService.profile(userId)).rejects.toMatchObject({
+      status: 404,
+      message: "User not found",
+    });
+    expect(mockUserRepo.findById).toHaveBeenCalledWith(userId);
+  });
+  it("Successfully return user profile", async () => {
+    mockUserRepo.findById.mockResolvedValueOnce(mockUser);
+    const result = await AuthService.profile(userId);
+    expect(mockUserRepo.findById).toHaveBeenCalledWith(userId);
+    expect(result).toEqual({ id: userId, email: mockUser.email });
+    expect(result).not.toHaveProperty("password");
+    expect(result).not.toHaveProperty("__v");
+  });
+});
