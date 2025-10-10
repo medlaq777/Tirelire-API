@@ -12,13 +12,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
     "bcryptjs": "^3.0.2",
+    "canvas": "^3.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "face-api.js": "^0.20.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
-    "nodemon": "^3.1.10"
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "jest": "^30.2.0"
