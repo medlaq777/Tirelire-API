@@ -1,8 +1,8 @@
 import path from "path";
+import * as canvasModule from "canvas";
+import * as faceapi from "face-api.js";
 import { fileURLToPath } from "url";
-import { Canvas } from "canvas";
-import faceapi from "face-api.js";
-const { canvas, Image, ImageData } = Canvas;
+const { Canvas, Image, ImageData } = canvasModule;
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
 class Face {
@@ -18,13 +18,13 @@ class Face {
     if (this._loaded) return;
     await faceapi.nets.tinyFaceDetector.loadFromDisk(this.modelsPath);
     await faceapi.nets.faceLandmark68Net.loadFromDisk(this.modelsPath);
-    await faceapi.nets.faceRecognitionNet.loadFromDisk(this.modelsPath.path);
+    await faceapi.nets.faceRecognitionNet.loadFromDisk(this.modelsPath);
 
     this._loaded = true;
   }
 
   bufferToImage(buffer) {
-    return canvas.loadImage(buffer);
+    return canvasModule.loadImage(buffer);
   }
 
   async getDescriptor(buffer) {
