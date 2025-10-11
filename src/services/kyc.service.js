@@ -75,7 +75,7 @@ class KycService {
     return this.kyc.updateStatus(kycId, status, verification);
   }
 
-  async isUserKyvApproved(userId) {
+  async isUserKycApproved(userId) {
     const doc = await this.kyc.findByUserId(userId);
     return doc && doc.status === "approved";
   }
