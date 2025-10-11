@@ -32,4 +32,4 @@ const keySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("kycDocument", kycSchema);
+export default mongoose.model("kycDocument", keySchema);

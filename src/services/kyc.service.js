@@ -1,7 +1,7 @@
-import Kyc from "../repositories/kyc.repository";
-import Crypto from "../utils/crypto";
-import Face from "../utils/face";
-import Config from "../config/config";
+import Kyc from "../repositories/kyc.repository.js";
+import Crypto from "../utils/crypto.js";
+import Face from "../utils/face.js";
+import Config from "../config/config.js";
 
 class KycService {
   constructor(kyc, crypto, face) {
@@ -81,4 +81,4 @@ class KycService {
   }
 }
 
-module.exports = new KycService(Kyc, new Crypto(), new Face());
+export default new KycService(Kyc, new Crypto(), new Face());

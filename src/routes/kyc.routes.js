@@ -1,6 +1,6 @@
 import express from "express";
-import KycController from "../controllers/kyc.controller";
-import AuthMiddleware from "../middlewares/auth.middleware";
+import KycController from "../controllers/kyc.controller.js";
+import AuthMiddleware from "../middlewares/auth.middleware.js";
 import multer from "multer";
 
 const upload = multer({
@@ -30,4 +30,4 @@ class KycRoutes {
     return r;
   }
 }
-module.exports = KycRoutes;
+export default KycRoutes;

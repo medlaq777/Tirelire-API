@@ -1,26 +1,24 @@
-import Kyc from "../models/kyc.model";
+import kyc from "../models/kyc.model.js";
 
 class KycRepositroy {
   async create(kycData) {
-    const k = new Kyc(kycData);
+    const k = new kyc(kycData);
     return k.save;
   }
 
   async findByUserId(userId) {
-    return Kyc.findOne({ user: userId }).exec();
+    return kyc.findOne({ user: userId }).exec();
   }
 
   async updateStatus(id, status, verification = {}) {
-    return Kyc.findByIdAndUpdate(
-      id,
-      { status, verification },
-      { new: true }
-    ).exec();
+    return kyc
+      .findByIdAndUpdate(id, { status, verification }, { new: true })
+      .exec();
   }
 
   async findById(id) {
-    return Kyc.findById(id).exec();
+    return kyc.findById(id).exec();
   }
 }
 
-module.exports = new KycRepositroy();
+export default new KycRepositroy();

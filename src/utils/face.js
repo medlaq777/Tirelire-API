@@ -1,11 +1,14 @@
 import path from "path";
-import { canvas } from "canvas";
+import { fileURLToPath } from "url";
+import { Canvas } from "canvas";
 import faceapi from "face-api.js";
-const { Canvas, Image, ImageData } = canvas;
+const { canvas, Image, ImageData } = Canvas;
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
 class Face {
   constructor(modelsPath) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     this.modelsPath =
       modelsPath || path.resolve(__dirname, "../models/faceapi");
     this._loaded = false;
@@ -56,4 +59,4 @@ class Face {
   }
 }
 
-module.exports = Face;
+export default Face;

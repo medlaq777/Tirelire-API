@@ -1,20 +1,23 @@
 import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
 import { v4 as uuidv4 } from "uuid";
-import Config from "../config/config";
+import Config from "../config/config.js";
 
 class Crypto {
-  constructor(storageDir = path.resolve(__dirname, "../../secure_storage")) {
-    this.storageDir = storageDir;
+  constructor(storageDir = null) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    this.storageDir = storageDir || path.resolve(__dirname, "../uploads");
   }
 
-  async esureDir() {
+  async ensureDir() {
     await fs.mkdir(this.storageDir, { recursive: true });
   }
 
-  async ecryptAndSave(buffer) {
-    await this.esureDir();
+  async encryptAndSave(buffer) {
+    await this.ensureDir();
     const key = Buffer.from(Config.fileEncryptionKey, "hex");
     const iv = crypto.randomBytes(12);
     const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
@@ -49,5 +52,4 @@ class Crypto {
     return decrypted;
   }
 }
-
-module.exports = Crypto;
+export default Crypto;

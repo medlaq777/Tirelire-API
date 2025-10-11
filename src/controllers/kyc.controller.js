@@ -1,4 +1,4 @@
-import Kyc from "../services/kyc.service";
+import Kyc from "../services/kyc.service.js";
 
 class KycController {
   constructor(service) {
@@ -45,4 +45,4 @@ class KycController {
   }
 }
 
-module.exports = new KycController(Kyc);
+export default new KycController(Kyc);
