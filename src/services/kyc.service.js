@@ -2,7 +2,7 @@ import Kyc from "../repositories/kyc.repository.js";
 import Crypto from "../utils/crypto.js";
 import Face from "../utils/face.js";
 import Config from "../config/config.js";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 
 class KycService {
   constructor(kyc, crypto, face) {
@@ -83,4 +83,5 @@ class KycService {
   }
 }
 
-export default new KycService(Kyc, new Crypto(), new Face());
+export default KycService;
+export const kycService = new KycService(Kyc, new Crypto(), new Face());
