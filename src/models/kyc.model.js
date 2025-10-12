@@ -4,8 +4,8 @@ const keySchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
     fullname: { type: String, required: true },
+    // nationalId: { type: String, required: true },
     nationalId: { type: String, required: true },
-    nationalId: { type: String, required: true, hash: true },
     idImageMeta: {
       filename: String,
       iv: String,

@@ -3,7 +3,7 @@ import kyc from "../models/kyc.model.js";
 class KycRepositroy {
   async create(kycData) {
     const k = new kyc(kycData);
-    return k.save;
+    return k.save();
   }
 
   async findByUserId(userId) {

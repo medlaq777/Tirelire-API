@@ -2,6 +2,7 @@ import Kyc from "../repositories/kyc.repository.js";
 import Crypto from "../utils/crypto.js";
 import Face from "../utils/face.js";
 import Config from "../config/config.js";
+import bcrypt from "bcryptjs";
 
 class KycService {
   constructor(kyc, crypto, face) {
@@ -20,10 +21,11 @@ class KycService {
 
     const idMeta = await this.crypto.encryptAndSave(idImgBuffer);
     const selfieMeta = await this.crypto.encryptAndSave(selfieBuffer);
+    const hashed = await bcrypt.hash(nationalId, 10);
     const kyc = await this.kyc.create({
       user: userId,
       fullname,
-      nationalId,
+      nationalId: hashed,
       idImageMeta: idMeta,
       selfieMeta: selfieMeta,
       status: "pending",
