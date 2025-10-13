@@ -7,36 +7,24 @@ import {
   beforeAll,
 } from "@jest/globals";
 
-jest.unstable_mockModule("bcryptjs", () => ({
-  default: {
-    hash: jest.fn(),
-    compare: jest.fn(),
-  },
+// Use static jest.mock so babel-jest can transform the imports.
+jest.mock("bcryptjs", () => ({
+  hash: jest.fn(),
+  compare: jest.fn(),
 }));
 
-jest.unstable_mockModule("../utils/jwt.js", () => ({
-  default: {
-    generateToken: jest.fn(),
-  },
+jest.mock("../utils/jwt.js", () => ({
+  generateToken: jest.fn(),
 }));
 
-let AuthService;
-let bcrypt;
-let jwt;
+import bcrypt from "bcryptjs";
+import jwt from "../utils/jwt.js";
+import AuthService from "../services/auth.service.js";
 const mockUserRepo = {
   findByEmail: jest.fn(),
   create: jest.fn(),
   findById: jest.fn(),
 };
-
-beforeAll(async () => {
-  const bcryptMod = await import("bcryptjs");
-  bcrypt = bcryptMod.default || bcryptMod;
-  const jwtMod = await import("../utils/jwt.js");
-  jwt = jwtMod.default || jwtMod;
-  const authMod = await import("../services/auth.service.js");
-  AuthService = authMod.default;
-});
 
 beforeEach(() => {
   jest.clearAllMocks();

@@ -1,15 +1,13 @@
 import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import { v4 as uuidv4 } from "uuid";
 import Config from "../config/config.js";
 
 class Crypto {
   constructor(storageDir = null) {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    this.storageDir = storageDir || path.resolve(__dirname, "../uploads");
+    const defaultUploads = path.resolve(process.cwd(), "src", "uploads");
+    this.storageDir = storageDir || defaultUploads;
   }
 
   async ensureDir() {

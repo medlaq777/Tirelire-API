@@ -1,21 +1,15 @@
-let KycService;
-let bcrypt;
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
+import bcrypt from "bcryptjs";
+import KycService from "../services/kyc.service.js";
+let KycServiceInstance = KycService;
 let Kyc;
-import {
-  jest,
-  describe,
-  it,
-  expect,
-  beforeEach,
-  beforeAll,
-} from "@jest/globals";
 
-jest.unstable_mockModule("bcryptjs", () => ({
+jest.mock("bcryptjs", () => ({
   hash: jest.fn(),
 }));
 
-jest.unstable_mockModule("../config/config.js", () => ({
-  default: { keyFaceThreshold: "0.6" },
+jest.mock("../config/config.js", () => ({
+  keyFaceThreshold: "0.6",
 }));
 
 const mockKycRepo = {
@@ -54,15 +48,9 @@ const mockInitialKyc = {
   toObject: () => ({ ...mockInitialKyc }),
 };
 
-beforeEach(async () => {
+beforeEach(() => {
   jest.clearAllMocks();
-  if (!KycService) {
-    KycService = (await import("../services/kyc.service.js")).default;
-  }
-  if (!bcrypt) {
-    bcrypt = await import("bcryptjs");
-  }
-  Kyc = new KycService(mockKycRepo, mockCrypto, mockFace);
+  Kyc = new KycServiceInstance(mockKycRepo, mockCrypto, mockFace);
   bcrypt.hash.mockResolvedValue(mockHashedNid);
 });
 
