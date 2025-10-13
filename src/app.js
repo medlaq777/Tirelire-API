@@ -5,6 +5,7 @@ import config from "./config/config.js";
 import db from "./config/db.js";
 import auth from "./routes/auth.routes.js";
 import kyc from "./routes/kyc.routes.js";
+import group from "./routes/group.routes.js";
 
 (async () => {
   const app = express();
@@ -13,6 +14,7 @@ import kyc from "./routes/kyc.routes.js";
   await db.connect();
   app.use("/api", auth.build());
   app.use("/api/kyc", kyc.build());
+  app.use("/api/group", group.build());
   app.use((err, req, res, next) => {
     console.log(err);
     const status = err.status || 500;

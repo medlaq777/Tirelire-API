@@ -22,4 +22,4 @@ class KycMiddleware {
   }
 }
 
-module.exports = KycMiddleware;
+export default KycMiddleware;
