@@ -23,8 +23,8 @@ class GroupService {
   }
 
   async joinGroup(groupId, userId) {
-    const groupe = await this.repo.findById(groupId);
-    if (!groupe) throw new Error("Group not found");
+    const group = await this.repo.findById(groupId);
+    if (!group) throw new Error("Group not found");
     if (group.status === "closed") throw new Error("Group is closed");
     return this.repo.joinGroup(groupId, userId);
   }

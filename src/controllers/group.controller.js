@@ -1,10 +1,14 @@
 import GroupService from "../services/group.service.js";
 
 class GroupController {
+  constructor(service = GroupService) {
+    this.service = service;
+  }
+
   async create(req, res, next) {
     try {
       const owner = req.user.id;
-      const result = await GroupService.createGroupe({ ...req.body, owner });
+      const result = await this.service.createGroupe({ ...req.body, owner });
       res.status(201).json(result);
     } catch (err) {
       next(err);
@@ -15,7 +19,7 @@ class GroupController {
     try {
       const { groupId } = req.params;
       const userId = req.user.id;
-      const result = await GroupService.joinGroup(groupId, userId);
+      const result = await this.service.joinGroup(groupId, userId);
       res.json(result);
     } catch (err) {
       next(err);
@@ -25,7 +29,7 @@ class GroupController {
   async list(req, res, next) {
     try {
       const userId = req.user.id;
-      const groups = await GroupService.listUserGroups(userId);
+      const groups = await this.service.listUserGroups(userId);
       res.json(groups);
     } catch (err) {
       next(err);
@@ -33,4 +37,4 @@ class GroupController {
   }
 }
 
-export default GroupController;
+export default new GroupController(GroupService);

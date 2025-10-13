@@ -1,4 +1,4 @@
-import Kyc from "../services/kyc.service";
+import Kyc from "../services/kyc.service.js";
 
 class KycMiddleware {
   static async requireKyc(req, res, next) {
@@ -11,7 +11,7 @@ class KycMiddleware {
       }
       const approved = await Kyc.isUserKycApproved(userId);
       if (!approved) {
-        const r = new Error("Kyw Required for this action");
+        const e = new Error("Kyc Required for this action");
         e.status = 403;
         throw e;
       }

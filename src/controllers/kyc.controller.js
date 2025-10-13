@@ -45,4 +45,4 @@ class KycController {
   }
 }
 
-export default KycController;
+export default new KycController(Kyc);

@@ -1,9 +1,7 @@
 import express from "express";
 import AuthMiddleware from "../middlewares/auth.middleware.js";
-import KycMiddleware from "../middlewares/kyc.middleware.js";
+import Kyc from "../middlewares/kyc.middleware.js";
 import GroupController from "../controllers/group.controller.js";
-
-const router = express.Router();
 
 class GroupRoutes {
   static build() {
@@ -11,21 +9,23 @@ class GroupRoutes {
 
     router.post(
       "/group",
-      AuthMiddleware.protect(),
-      KycMiddleware.requireKyc(),
+      AuthMiddleware.protect,
+      Kyc.requireKyc,
       GroupController.join.bind(GroupController)
     );
     router.post(
       "/:groupId/join",
-      AuthMiddleware.protect(),
-      KycMiddleware.requireKyc(),
+      AuthMiddleware.protect,
+      Kyc.requireKyc,
       GroupController.join.bind(GroupController)
     );
     router.get(
       "/group",
-      AuthMiddleware.protect(),
+      AuthMiddleware.protect,
       GroupController.list.bind(GroupController)
     );
+
+    return router;
   }
 }
 
