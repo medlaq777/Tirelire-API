@@ -7,7 +7,10 @@ import {
   beforeAll,
 } from "@jest/globals";
 
-// Use static jest.mock so babel-jest can transform the imports.
+import bcrypt from "bcryptjs";
+import jwt from "../utils/jwt.js";
+import AuthService from "../services/auth.service.js";
+
 jest.mock("bcryptjs", () => ({
   hash: jest.fn(),
   compare: jest.fn(),
@@ -17,9 +20,6 @@ jest.mock("../utils/jwt.js", () => ({
   generateToken: jest.fn(),
 }));
 
-import bcrypt from "bcryptjs";
-import jwt from "../utils/jwt.js";
-import AuthService from "../services/auth.service.js";
 const mockUserRepo = {
   findByEmail: jest.fn(),
   create: jest.fn(),
