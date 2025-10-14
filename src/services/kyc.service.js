@@ -9,7 +9,7 @@ class KycService {
     this.kyc = kyc;
     this.crypto = crypto;
     this.face = face;
-    this.threshold = parseFloat(Config.keyFaceThreshold || "0.6");
+    this.threshold = Number.parseFloat(Config.keyFaceThreshold || "0.6");
   }
 
   async submitKyc({ userId, fullname, nationalId, idImgBuffer, selfieBuffer }) {

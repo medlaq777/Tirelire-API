@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import config from "./config/config.js";
+import Config from "./config/config.js";
 import db from "./config/db.js";
 import auth from "./routes/auth.routes.js";
 import kyc from "./routes/kyc.routes.js";
@@ -21,7 +21,7 @@ import group from "./routes/group.routes.js";
     res.status(status).json({ message: err.message });
   });
 
-  const port = config.port;
+  const port = Config.port;
   app.listen(port, () =>
     console.log(`🚀 Server running on port http://localhost:${port}`)
   );

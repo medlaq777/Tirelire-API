@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
-import config from "./config.js";
+import Config from "./config.js";
 
-class database {
+class Database {
   constructor() {
     this.connected = false;
   }
   async connect() {
     if (this.connected) return;
-    if (!config.mongoUri) throw new Error("MongoDB URI not provided in config");
+    if (!Config.mongoUri) throw new Error("MongoDB URI not provided in config");
     try {
-      await mongoose.connect(config.mongoUri);
+      await mongoose.connect(Config.mongoUri);
       this.connected = true;
       console.log("MongoDB connected");
     } catch (err) {
@@ -19,4 +19,4 @@ class database {
   }
 }
 
-export default new database();
+export default new Database();
