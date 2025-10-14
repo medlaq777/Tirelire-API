@@ -1,3 +1,4 @@
+.scannerwork
 node_modules
-coverage/*
+coverage
 .env
