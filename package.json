@@ -21,10 +21,11 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "express": "^5.1.0",
-    "jest": "^30.2.0",
     "@babel/core": "^7.25.0",
     "@babel/preset-env": "^7.25.0",
-    "babel-jest": "^30.2.0"
+    "babel-jest": "^30.2.0",
+    "express": "^5.1.0",
+    "jest": "^30.2.0",
+    "sonar-scanner": "^3.1.0"
   }
 }

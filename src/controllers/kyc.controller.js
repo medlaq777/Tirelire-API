@@ -1,7 +1,7 @@
-import Kyc from "../services/kyc.service.js";
+import { kycService as Kyc } from "../services/kyc.service.js";
 
 class KycController {
-  constructor(service) {
+  constructor(service = Kyc) {
     this.service = service;
   }
 

@@ -1,4 +1,4 @@
-import Kyc from "../services/kyc.service.js";
+import { kycService as Kyc } from "../services/kyc.service.js";
 
 class KycMiddleware {
   static async requireKyc(req, res, next) {
