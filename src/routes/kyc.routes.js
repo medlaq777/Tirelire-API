@@ -12,7 +12,7 @@ class KycRoutes {
   static build() {
     const r = express.Router();
     r.post(
-      "/submit",
+      "/kyc/submit",
       AuthMiddleware.protect,
       upload.fields([
         { name: "idImage", maxCount: 1 },
@@ -22,7 +22,7 @@ class KycRoutes {
     );
 
     r.post(
-      "/:kycId/approve",
+      "/approve",
       AuthMiddleware.protect,
       AuthMiddleware.authorizeRole("admin"),
       KycController.adminApprove.bind(KycController)

@@ -50,7 +50,11 @@ class AuthService {
       err.status = 401;
       throw err;
     }
-    const token = jwt.generateToken({ id: user.id, email: user.email });
+    const token = jwt.generateToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
     return { user: this.sanitize(user), token };
   }
 

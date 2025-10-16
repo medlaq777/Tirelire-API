@@ -18,14 +18,14 @@ class TicketRoutes {
     );
 
     router.get(
-      "/admin/all",
+      "/tickets/all",
       AuthMiddleware.protect,
       AuthMiddleware.authorizeRole("admin"),
       TicketController.listAll.bind(TicketController)
     );
 
     router.put(
-      "/admin/:ticketId/status",
+      "/tickets/status",
       AuthMiddleware.protect,
       AuthMiddleware.authorizeRole("admin"),
       TicketController.resolve.bind(TicketController)

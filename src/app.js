@@ -15,7 +15,7 @@ app.use("/api/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 await db.connect();
 app.use("/api", AuthRoutes.build());
-app.use("/api/kyc", KycRoutes.build());
+app.use("/api", KycRoutes.build());
 app.use("/api", GroupRoutes.build());
 app.use("/api", PaymentRoutes.build());
 app.use("/api", TicketRoutes.build());

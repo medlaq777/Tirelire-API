@@ -29,8 +29,7 @@ class KycController {
 
   async adminApprove(req, res, next) {
     try {
-      const { kycId } = req.params;
-      const { approve, note } = req.body;
+      const { kycId, approve, note } = req.body;
       const adminId = req.user.id;
       const updated = await this.service.adminApprove(
         kycId,

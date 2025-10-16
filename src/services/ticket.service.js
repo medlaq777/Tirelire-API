@@ -8,7 +8,7 @@ class TicketService {
   async createTicket({ user, group, subject, message }) {
     if (!subject || !message) {
       const err = new Error("Subject and message are required");
-      err.status(400);
+      err.status = 400;
       throw err;
     }
 

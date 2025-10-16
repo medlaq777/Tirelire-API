@@ -38,8 +38,7 @@ class TicketController {
 
   async resolve(req, res, next) {
     try {
-      const { ticketId } = req.parms;
-      const { status } = req.body;
+      const { ticketId, status } = req.body;
       const result = await TicketService.resolveTicket(
         ticketId,
         req.user.id,

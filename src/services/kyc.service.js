@@ -72,7 +72,7 @@ class KycService {
     const verification = {
       method: "manual",
       score: null,
-      nore: `by:${adminId} ${note}`,
+      note: `by:${adminId} ${note}`,
     };
     return this.kyc.updateStatus(kycId, status, verification);
   }

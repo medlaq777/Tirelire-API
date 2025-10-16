@@ -13,8 +13,8 @@ class TicketRepository {
     return Ticket.find({ user: userId }).exec();
   }
 
-  async updateStatus(id, status) {
-    return Ticket.findByIdAndUpdate(id, { status }, { new: true });
+  async updateStatus(ticketId, status) {
+    return Ticket.findByIdAndUpdate(ticketId, { status }, { new: true });
   }
 }
 
