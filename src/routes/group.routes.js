@@ -11,7 +11,7 @@ class GroupRoutes {
       "/group",
       AuthMiddleware.protect,
       Kyc.requireKyc,
-      GroupController.join.bind(GroupController)
+      GroupController.create.bind(GroupController)
     );
     router.post(
       "/:groupId/join",
