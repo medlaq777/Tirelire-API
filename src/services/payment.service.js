@@ -12,7 +12,6 @@ class PaymentService {
 
   async createPaymentIntent({ groupId, userId, amount }) {
     const group = await this.groupRepo.findById(groupId);
-    console.log(group);
     if (!group) {
       const e = new Error("Group not found");
       e.status = 404;
@@ -36,9 +35,12 @@ class PaymentService {
 
   async handleWebhook(event) {
     const { type, data } = event;
+
     if (type === "payment_intent.succeeded") {
       const paymentIntent = data.object;
-      const payment = await this.paymentRepo.findByStripeId(paymentIntent.id);
+      const payment = await this.paymentRepo.findByStripId(
+        paymentIntent.payment_intent
+      );
       if (payment)
         await this.paymentRepo.updateStatus(payment._id, "succeeded");
     }

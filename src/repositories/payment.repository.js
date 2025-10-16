@@ -6,6 +6,7 @@ class PaymentRepository {
   }
 
   async updateStatus(id, status) {
+    console.log(id, status);
     return Payment.findByIdAndUpdate(id, { status }, { new: true });
   }
 

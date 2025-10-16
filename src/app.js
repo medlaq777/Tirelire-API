@@ -10,7 +10,7 @@ import PaymentRoutes from "./routes/payment.routes.js";
 
 const app = express();
 app.use(cors());
-app.use("/api/payments/webhook", express.raw({ type: "application/json" }));
+app.use("/api/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 await db.connect();
 app.use("/api", AuthRoutes.build());

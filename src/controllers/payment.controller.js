@@ -23,7 +23,7 @@ class PaymentController {
       const stripe = new Stripe(Config.stripeSecret);
       const sig = req.headers["stripe-signature"];
       const event = stripe.webhooks.constructEvent(
-        req.rawBody,
+        req.body,
         sig,
         Config.stripeWebhookSecret
       );
