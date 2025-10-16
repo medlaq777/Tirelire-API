@@ -14,7 +14,7 @@ import group from "./routes/group.routes.js";
   await db.connect();
   app.use("/api", auth.build());
   app.use("/api/kyc", kyc.build());
-  app.use("/api/group", group.build());
+  app.use("/api", group.build());
   app.use((err, req, res, next) => {
     console.log(err);
     const status = err.status || 500;
