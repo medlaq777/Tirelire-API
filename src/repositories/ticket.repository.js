@@ -17,3 +17,5 @@ class TicketRepository {
     return Ticket.findByIdAndUpdate(id, { status }, { new: true });
   }
 }
+
+export default new TicketRepository();
