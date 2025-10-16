@@ -215,7 +215,7 @@ describe("Kyc.adminApprove", () => {
       "approved",
       expect.objectContaining({
         method: "manual",
-        nore: `by:${adminId} ${note}`,
+        note: `by:${adminId} ${note}`,
       })
     );
   });
@@ -227,7 +227,7 @@ describe("Kyc.adminApprove", () => {
       "rejected",
       expect.objectContaining({
         method: "manual",
-        nore: `by:${adminId} ${note}`,
+        note: `by:${adminId} ${note}`,
       })
     );
   });

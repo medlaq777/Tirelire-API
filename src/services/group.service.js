@@ -11,7 +11,6 @@ class GroupService {
       e.status = 400;
       throw e;
     }
-
     return this.repo.create({
       name,
       description,
@@ -41,4 +40,5 @@ class GroupService {
   }
 }
 
+export { GroupService };
 export default new GroupService(GroupRepo);
