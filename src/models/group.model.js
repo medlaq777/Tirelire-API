@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const groupSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   amount: { type: Number, required: true },
@@ -11,4 +11,4 @@ const userSchema = new mongoose.Schema({
   status: { type: String, enum: ["active", "closed"], default: "active" },
 });
 
-export default mongoose.model("Group", userSchema);
+export default mongoose.model("Group", groupSchema);
