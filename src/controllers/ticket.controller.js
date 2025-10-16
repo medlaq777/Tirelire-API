@@ -17,6 +17,16 @@ class TicketController {
     }
   }
 
+  async listUser(req, res, next) {
+    try {
+      const user = req.user.id;
+      const tickets = await TicketService.listUserTickets(user);
+      res.json(tickets);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async listAll(req, res, next) {
     try {
       const ticket = await TicketService.listAllTickets();
