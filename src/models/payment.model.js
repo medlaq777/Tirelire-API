@@ -4,9 +4,9 @@ const paymentSchema = new mongoose.Schema({
   group: { type: mongoose.Schema.ObjectId, ref: "Group", required: true },
   member: { type: mongoose.Schema.ObjectId, ref: "User", required: true },
   amount: { type: Number, required: true },
-  stripePaymentId: { type: string },
+  stripePaymentId: { type: String },
   status: {
-    type: string,
+    type: String,
     enum: ["pending", "success", "failed"],
     default: "pending",
   },

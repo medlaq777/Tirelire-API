@@ -20,7 +20,7 @@ class GroupRepository {
     ).exec();
   }
 
-  async update(groupeId, data) {
+  async update(groupId, data) {
     return Group.findByIdAndUpdate(groupId, data, { new: true });
   }
 }

@@ -3,7 +3,7 @@ import Config from "../config/config.js";
 import PaymentRepository from "../repositories/payment.repository.js";
 import GroupRepository from "../repositories/group.repository.js";
 
-class PaymentServie {
+class PaymentService {
   constructor(paymentRepo, groupRepo) {
     this.stripe = new Stripe(Config.stripeSecret);
     this.paymentRepo = paymentRepo;
@@ -12,6 +12,7 @@ class PaymentServie {
 
   async createPaymentIntent({ groupId, userId, amount }) {
     const group = await this.groupRepo.findById(groupId);
+    console.log(group);
     if (!group) {
       const e = new Error("Group not found");
       e.status = 404;
@@ -50,4 +51,4 @@ class PaymentServie {
   }
 }
 
-export default PaymentServie(PaymentRepository, GroupRepository);
+export default new PaymentService(PaymentRepository, GroupRepository);

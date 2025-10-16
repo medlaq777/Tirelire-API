@@ -19,6 +19,7 @@ class PaymentRoutes {
       express.raw({ type: "application/json" }),
       PaymentController.webhook.bind(PaymentController)
     );
+    return router;
   }
 }
 

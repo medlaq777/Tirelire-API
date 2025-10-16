@@ -5,7 +5,7 @@ import Stripe from "stripe";
 class PaymentController {
   async createIntent(req, res, next) {
     try {
-      const { groupId, amount } = req.user.id;
+      const { groupId, amount } = req.body;
       const userId = req.user.id;
       const result = await PaymentService.createPaymentIntent({
         groupId,
