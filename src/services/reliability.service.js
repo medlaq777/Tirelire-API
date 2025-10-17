@@ -9,22 +9,23 @@ class ReliabilityService {
   async updateScore(userId, action) {
     const user = await User.findById(userId);
     if (!user) throw new Error("User not found");
-    let newScore = user.reliabilityScore || 100;
+    let newScore = user.reliabilityScore ?? 100;
 
     switch (action) {
       case "success":
-        newScore = Math.min(this.maxScore, newScore + 1);
+        newScore = newScore + 1;
         break;
       case "fail":
-        newScore = Math.max(this.minScore, newScore - 2);
+        newScore = newScore - 2;
         break;
       case "late":
-        newScore = Math.max(this.minScore, newScore - 1);
+        newScore = newScore - 1;
         break;
       default:
         break;
     }
 
+    newScore = Math.max(this.minScore, Math.min(this.maxScore, newScore));
     user.reliabilityScore = newScore;
     await user.save();
     return newScore;
@@ -39,4 +40,4 @@ class ReliabilityService {
   }
 }
 
-export default new ReliabilityService();
+export default ReliabilityService;

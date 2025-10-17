@@ -27,4 +27,5 @@ class TicketService {
     return this.repo.findAll();
   }
 }
+export { TicketService };
 export default new TicketService(TicketRepository);

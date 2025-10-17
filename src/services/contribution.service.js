@@ -58,9 +58,12 @@ class ContributionService {
   }
 }
 
-export default new ContributionService(
+const contributionServiceInstance = new ContributionService(
   contributionRepository,
   GroupRepository,
-  ReliabilityService,
+  new ReliabilityService(),
   PaymentRepository
 );
+
+export default ContributionService;
+export { contributionServiceInstance };

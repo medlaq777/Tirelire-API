@@ -55,7 +55,7 @@ class KycService {
         score: result.distance,
         note: result.match ? "auto_approved" : "distance_above_threshold",
       });
-      // if auto-approved, mark user as KYC verified
+
       if (
         newStatus === "approved" &&
         this.userRepo &&
