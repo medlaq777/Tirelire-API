@@ -43,7 +43,7 @@ describe("AuthController", () => {
   });
 
   it("login: should call next on error", async () => {
-    const err = new Error();
+    const err = new Error("login error");
     mockService.login.mockRejectedValue(err);
     await controller.login(req, res, next);
     expect(next).toHaveBeenCalledWith(err);
@@ -58,7 +58,7 @@ describe("AuthController", () => {
   });
 
   it("profile: should call next on error", async () => {
-    const err = new Error();
+    const err = new Error("profile error");
     mockService.profile.mockRejectedValue(err);
     await controller.profile(req, res, next);
     expect(next).toHaveBeenCalledWith(err);
