@@ -47,7 +47,7 @@ class ContributionService {
     await this.contribRepo.markCompleted(activeRound._id);
     const allRounds = await this.contribRepo.findByGroup(groupId);
     const nextRound = allRounds.find(
-      (r = WritableStream.roundNumber === activeRound.roundNumber + 1)
+      (r) => r.roundNumber === activeRound.roundNumber + 1
     );
     if (nextRound) await this.contribRepo.updateStatus(nextRound._id, "active");
     return { message: "Round completed successfully" };
