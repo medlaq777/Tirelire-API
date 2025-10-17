@@ -68,8 +68,9 @@ class AuthService {
     return this.sanitize(user);
   }
   sanitize(user) {
-    const { password, __v, ...rest } =
-      user?.toObject?.() ?? user;
+    if (!user || typeof user !== "object") return {};
+    const obj = user?.toObject?.() ?? user;
+    const { password, __v, ...rest } = obj || {};
     return rest;
   }
 }

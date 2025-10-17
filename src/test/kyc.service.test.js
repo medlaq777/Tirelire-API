@@ -1,4 +1,12 @@
-import { jest, describe, it, expect, beforeEach } from "@jest/globals";
+import {
+  jest,
+  describe,
+  it,
+  expect,
+  beforeEach,
+  beforeAll,
+  afterAll,
+} from "@jest/globals";
 import bcrypt from "bcryptjs";
 import KycService from "../services/kyc.service.js";
 let KycServiceInstance = KycService;
@@ -30,6 +38,10 @@ const mockFace = {
 
 let kyc;
 
+const mockUserRepo = {
+  setKycVerified: jest.fn().mockResolvedValue(true),
+};
+
 const mockUserId = "user-123";
 const mockKycId = "kyc-456";
 const mockFullname = "MOUHCINE TEMSAMANI";
@@ -48,9 +60,18 @@ const mockInitialKyc = {
   toObject: () => ({ ...mockInitialKyc }),
 };
 
+beforeAll(() => {
+  jest.spyOn(console, "error").mockImplementation(() => {});
+  jest.spyOn(console, "warn").mockImplementation(() => {});
+});
+afterAll(() => {
+  console.error.mockRestore();
+  console.warn.mockRestore();
+});
+
 beforeEach(() => {
   jest.clearAllMocks();
-  Kyc = new KycServiceInstance(mockKycRepo, mockCrypto, mockFace);
+  Kyc = new KycServiceInstance(mockKycRepo, mockCrypto, mockFace, mockUserRepo);
   bcrypt.hash.mockResolvedValue(mockHashedNid);
 });
 
@@ -84,6 +105,7 @@ describe("Kyc.submitKyc", () => {
       distance: 0.1,
     });
     mockKycRepo.findById.mockResolvedValue(mockApprovedKyc);
+    mockKycRepo.updateStatus.mockResolvedValue(mockApprovedKyc);
     const result = await Kyc.submitKyc({
       userId: mockUserId,
       fullname: mockFullname,
@@ -112,6 +134,10 @@ describe("Kyc.submitKyc", () => {
         note: "auto_approved",
       })
     );
+    expect(mockUserRepo.setKycVerified).toHaveBeenCalledWith(
+      mockApprovedKyc.user,
+      true
+    );
     expect(result.auto).toBe(true);
     expect(result.kyc).toBe(mockApprovedKyc);
   });
@@ -123,6 +149,10 @@ describe("Kyc.submitKyc", () => {
     mockFace.compareImages.mockResolvedValue({
       match: false,
       distance: 0.7,
+    });
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "pending",
     });
 
     const result = await Kyc.submitKyc({
@@ -140,6 +170,7 @@ describe("Kyc.submitKyc", () => {
         note: "distance_above_threshold",
       })
     );
+    expect(mockUserRepo.setKycVerified).not.toHaveBeenCalled();
     expect(result.auto).toBe(true);
     expect(result.result.match).toBe(false);
   });
@@ -150,6 +181,10 @@ describe("Kyc.submitKyc", () => {
     mockFace.compareImages.mockResolvedValue({
       match: false,
       distance: null,
+    });
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "pending",
     });
     const result = await Kyc.submitKyc({
       userId: mockUserId,
@@ -168,6 +203,7 @@ describe("Kyc.submitKyc", () => {
         score: null,
       })
     );
+    expect(mockUserRepo.setKycVerified).not.toHaveBeenCalled();
     expect(result.auto).toBe(false);
     expect(result.reason).toBe("face_not_detected");
     expect(mockKycRepo.findById).not.toHaveBeenCalled();
@@ -178,6 +214,10 @@ describe("Kyc.submitKyc", () => {
     mockKycRepo.create.mockResolvedValue(mockInitialKyc);
     const mockError = new Error("Decryption failed due to file corruption");
     mockCrypto.decryptFromFileMeta.mockRejectedValue(mockError);
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "pending",
+    });
 
     const result = await Kyc.submitKyc({
       userId: mockUserId,
@@ -196,6 +236,7 @@ describe("Kyc.submitKyc", () => {
         note: "auto_error",
       })
     );
+    expect(mockUserRepo.setKycVerified).not.toHaveBeenCalled();
     expect(result.auto).toBe(false);
     expect(result.error).toBe("Decryption failed due to file corruption");
     expect(mockFace.compareImages).not.toHaveBeenCalled();
@@ -206,9 +247,8 @@ describe("Kyc.adminApprove", () => {
   const adminId = "admin-999";
   const note = "manual check complete, hight quality photos";
   it(`updateStatus to 'approved' whene approve is true`, async () => {
-    mockKycRepo.updateStatus.mockResolvedValue({
-      status: "approved",
-    });
+    const updated = { status: "approved", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
     await Kyc.adminApprove(mockKycId, true, adminId, note);
     expect(mockKycRepo.updateStatus).toHaveBeenLastCalledWith(
       mockKycId,
@@ -218,9 +258,11 @@ describe("Kyc.adminApprove", () => {
         note: `by:${adminId} ${note}`,
       })
     );
+    expect(mockUserRepo.setKycVerified).toHaveBeenCalledWith(mockUserId, true);
   });
   it(`updateStatus to 'rejected' whene approve is false`, async () => {
-    mockKycRepo.updateStatus.mockResolvedValue({ status: "rejected" });
+    const updated = { status: "rejected", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
     await Kyc.adminApprove(mockKycId, false, adminId, note);
     expect(mockKycRepo.updateStatus).toHaveBeenCalledWith(
       mockKycId,
@@ -230,6 +272,61 @@ describe("Kyc.adminApprove", () => {
         note: `by:${adminId} ${note}`,
       })
     );
+    expect(mockUserRepo.setKycVerified).toHaveBeenCalledWith(mockUserId, false);
+  });
+
+  it("handles error in setKycVerified gracefully for approve", async () => {
+    const updated = { status: "approved", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
+    mockUserRepo.setKycVerified.mockImplementationOnce(() => {
+      throw new Error("fail");
+    });
+    await expect(
+      Kyc.adminApprove(mockKycId, true, adminId, note)
+    ).resolves.toEqual(updated);
+    expect(mockKycRepo.updateStatus).toHaveBeenCalled();
+  });
+
+  it("handles error in setKycVerified gracefully for reject", async () => {
+    const updated = { status: "rejected", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
+    mockUserRepo.setKycVerified.mockImplementationOnce(() => {
+      throw new Error("fail");
+    });
+    await expect(
+      Kyc.adminApprove(mockKycId, false, adminId, note)
+    ).resolves.toEqual(updated);
+    expect(mockKycRepo.updateStatus).toHaveBeenCalled();
+  });
+});
+
+describe("KycService async error branches", () => {
+  it("handles async rejection in setKycVerified for approve", async () => {
+    const adminId = "admin-999";
+    const note = "manual check complete, hight quality photos";
+    const updated = { status: "approved", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
+    mockUserRepo.setKycVerified.mockImplementationOnce(() =>
+      Promise.reject(new Error("fail"))
+    );
+    await expect(
+      Kyc.adminApprove(mockKycId, true, adminId, note)
+    ).resolves.toEqual(updated);
+    expect(mockKycRepo.updateStatus).toHaveBeenCalled();
+  });
+
+  it("handles async rejection in setKycVerified for reject", async () => {
+    const adminId = "admin-999";
+    const note = "manual check complete, hight quality photos";
+    const updated = { status: "rejected", user: mockUserId };
+    mockKycRepo.updateStatus.mockResolvedValue(updated);
+    mockUserRepo.setKycVerified.mockImplementationOnce(() =>
+      Promise.reject(new Error("fail"))
+    );
+    await expect(
+      Kyc.adminApprove(mockKycId, false, adminId, note)
+    ).resolves.toEqual(updated);
+    expect(mockKycRepo.updateStatus).toHaveBeenCalled();
   });
 });
 
@@ -242,16 +339,135 @@ describe("Kyc.isUserKycApproved", () => {
     expect(result).toBe(true);
   });
 
-  it("flase whene the KYC document status is 'pending'", async () => {
+  it("returns false when the KYC document status is not 'approved'", async () => {
     const pendingDoc = { status: "pending" };
     mockKycRepo.findByUserId.mockResolvedValue(pendingDoc);
     const result = await Kyc.isUserKycApproved(mockUserId);
     expect(result).toBe(false);
   });
 
-  it("false whene no KYC document is found for the user", async () => {
+  it("returns null when no KYC document is found for the user", async () => {
     mockKycRepo.findByUserId.mockResolvedValue(null);
     const result = await Kyc.isUserKycApproved(mockUserId);
     expect(result).toBe(null);
+  });
+});
+
+describe("KycService edge cases", () => {
+  it("should not call setKycVerified if userRepo is not provided", async () => {
+    const KycNoUserRepo = new KycServiceInstance(
+      mockKycRepo,
+      mockCrypto,
+      mockFace,
+      null
+    );
+    mockCrypto.encryptAndSave.mockResolvedValue(mockIdMeta);
+    mockKycRepo.create.mockResolvedValue(mockInitialKyc);
+    mockCrypto.decryptFromFileMeta.mockResolvedValue(mockIdImgBuffer);
+    mockFace.compareImages.mockResolvedValue({ match: true, distance: 0.1 });
+    mockKycRepo.findById.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "approved",
+    });
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "approved",
+    });
+    await KycNoUserRepo.submitKyc({
+      userId: mockUserId,
+      fullname: mockFullname,
+      nationalId: mockNationalId,
+      idImgBuffer: mockIdImgBuffer,
+      selfieBuffer: mockSelfieBuffer,
+    });
+    expect(mockUserRepo.setKycVerified).not.toHaveBeenCalled();
+  });
+  it("should throw error if fullname or nationalId missing", async () => {
+    await expect(
+      Kyc.submitKyc({ userId: mockUserId, fullname: "" })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "fullname and national ID are required",
+    });
+    await expect(
+      Kyc.submitKyc({ userId: mockUserId, nationalId: "" })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "fullname and national ID are required",
+    });
+  });
+
+  it("should fallback to default threshold if config is missing", () => {
+    jest.resetModules();
+    const KycServiceLocal = require("../services/kyc.service.js").default;
+    const fakeConfig = {};
+    const service = new KycServiceLocal(
+      mockKycRepo,
+      mockCrypto,
+      mockFace,
+      null
+    );
+    expect(service.threshold).toBe(0.6);
+  });
+});
+
+describe("Kyc.submitKyc face comparison edge cases", () => {
+  it("Kyc as pending when match is true but distance is null", async () => {
+    mockCrypto.encryptAndSave.mockResolvedValue(mockIdMeta);
+    mockKycRepo.create.mockResolvedValue(mockInitialKyc);
+    mockCrypto.decryptFromFileMeta.mockResolvedValue(mockIdImgBuffer);
+    mockFace.compareImages.mockResolvedValue({ match: true, distance: null });
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "pending",
+    });
+    const result = await Kyc.submitKyc({
+      userId: mockUserId,
+      fullname: mockFullname,
+      nationalId: mockNationalId,
+      idImgBuffer: mockIdImgBuffer,
+      selfieBuffer: mockSelfieBuffer,
+    });
+    expect(mockKycRepo.updateStatus).toHaveBeenCalledWith(
+      mockKycId,
+      "pending",
+      expect.objectContaining({
+        method: "auto",
+        note: "face_not_detected",
+        score: null,
+      })
+    );
+    expect(result.auto).toBe(false);
+    expect(result.reason).toBe("face_not_detected");
+  });
+
+  it("Kyc as pending when match is false but distance is below threshold", async () => {
+    mockCrypto.encryptAndSave.mockResolvedValue(mockIdMeta);
+    mockKycRepo.create.mockResolvedValue(mockInitialKyc);
+    mockCrypto.decryptFromFileMeta.mockResolvedValue(mockIdImgBuffer);
+    mockFace.compareImages.mockResolvedValue({ match: false, distance: 0.1 });
+    mockKycRepo.updateStatus.mockResolvedValue({
+      ...mockInitialKyc,
+      status: "pending",
+    });
+    const result = await Kyc.submitKyc({
+      userId: mockUserId,
+      fullname: mockFullname,
+      nationalId: mockNationalId,
+      idImgBuffer: mockIdImgBuffer,
+      selfieBuffer: mockSelfieBuffer,
+    });
+    expect(mockKycRepo.updateStatus).toHaveBeenCalledWith(
+      mockKycId,
+      "pending",
+      expect.objectContaining({
+        method: "auto",
+        note: "distance_above_threshold",
+        score: 0.1,
+      })
+    );
+    expect(result.auto).toBe(true);
+    expect(result.result.match).toBe(false);
+    expect(result.result.distance).toBe(0.1);
   });
 });

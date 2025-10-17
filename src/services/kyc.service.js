@@ -6,12 +6,12 @@ import Config from "../config/config.js";
 import * as bcrypt from "bcryptjs";
 
 class KycService {
-  constructor(kyc, crypto, face, userRepo = null) {
+  constructor(kyc, crypto, face, userRepo) {
     this.kyc = kyc;
     this.crypto = crypto;
     this.face = face;
     this.userRepo = userRepo;
-    this.threshold = Number.parseFloat(Config.keyFaceThreshold || "0.6");
+    this.threshold = Number.parseFloat(Config.keyFaceThreshold);
   }
 
   async submitKyc({ userId, fullname, nationalId, idImgBuffer, selfieBuffer }) {
@@ -56,15 +56,11 @@ class KycService {
         note: result.match ? "auto_approved" : "distance_above_threshold",
       });
 
-      if (
-        newStatus === "approved" &&
-        this.userRepo &&
-        this.userRepo.setKycVerified
-      ) {
+      if (newStatus === "approved" && this.userRepo?.setKycVerified) {
         try {
           this.userRepo.setKycVerified(updated.user, true).catch(() => {});
         } catch (e) {
-          console.error(e);
+          console.error("Error updating user KYC verification status:", e);
         }
       }
       return {
@@ -89,7 +85,7 @@ class KycService {
       note: `by:${adminId} ${note}`,
     };
     const updated = await this.kyc.updateStatus(kycId, status, verification);
-    if (this.userRepo && this.userRepo.setKycVerified) {
+    if (this.userRepo?.setKycVerified) {
       try {
         if (status === "approved") {
           this.userRepo.setKycVerified(updated.user, true).catch(() => {});
@@ -97,7 +93,7 @@ class KycService {
           this.userRepo.setKycVerified(updated.user, false).catch(() => {});
         }
       } catch (e) {
-        /* swallow - keep KYC update authoritative */
+        console.error("Error updating user KYC verification status:", e);
       }
     }
     return updated;

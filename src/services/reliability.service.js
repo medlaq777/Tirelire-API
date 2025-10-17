@@ -30,6 +30,7 @@ class ReliabilityService {
   }
 
   async getScore(userId) {
+    if (!userId) throw new Error("userId is required");
     const user = await User.findById(userId).select(
       "reliabilityScore name email"
     );

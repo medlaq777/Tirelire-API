@@ -196,3 +196,50 @@ describe("AuthService.profile", () => {
     expect(result).not.toHaveProperty("__v");
   });
 });
+
+describe("AuthService.sanitize", () => {
+  it("removes password and __v from user object with toObject", () => {
+    const user = {
+      toObject: () => ({
+        id: "1",
+        email: "a@b.com",
+        password: "secret",
+        __v: 0,
+      }),
+    };
+    const result = AuthService.sanitize(user);
+    expect(result).toEqual({ id: "1", email: "a@b.com" });
+    expect(result).not.toHaveProperty("password");
+    expect(result).not.toHaveProperty("__v");
+  });
+
+  it("removes password and __v from plain user object", () => {
+    const user = { id: "2", email: "b@b.com", password: "pw", __v: 1 };
+    const result = AuthService.sanitize(user);
+    expect(result).toEqual({ id: "2", email: "b@b.com" });
+    expect(result).not.toHaveProperty("password");
+    expect(result).not.toHaveProperty("__v");
+  });
+
+  it("returns empty object if user is null or undefined", () => {
+    expect(AuthService.sanitize(null)).toEqual({});
+    expect(AuthService.sanitize(undefined)).toEqual({});
+  });
+});
+
+describe("AuthService.sanitize edge cases", () => {
+  it("returns object unchanged if password and __v are missing", () => {
+    const user = { id: "3", email: "c@b.com" };
+    const result = AuthService.sanitize(user);
+    expect(result).toEqual({ id: "3", email: "c@b.com" });
+  });
+
+  it("returns empty object if input is not an object", () => {
+    expect(AuthService.sanitize(42)).toEqual({});
+    expect(AuthService.sanitize("string")).toEqual({});
+  });
+});
+
+describe("AuthService constructor", () => {
+  // Skipped: AuthService is a singleton, not a class export
+});

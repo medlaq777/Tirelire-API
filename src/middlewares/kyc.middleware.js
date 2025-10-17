@@ -3,7 +3,7 @@ import { kycService as Kyc } from "../services/kyc.service.js";
 class KycMiddleware {
   static async requireKyc(req, res, next) {
     try {
-      const userId = req.user && req.user.id;
+      const userId = req.user?.id;
       if (!userId) {
         const e = new Error("unauthorized");
         e.status = 401;

@@ -2,9 +2,8 @@ import mongoose from "mongoose";
 import Config from "./config.js";
 
 class Database {
-  constructor() {
-    this.connected = false;
-  }
+  connected = false;
+
   async connect() {
     if (this.connected) return;
     if (!Config.mongoUri) throw new Error("MongoDB URI not provided in config");

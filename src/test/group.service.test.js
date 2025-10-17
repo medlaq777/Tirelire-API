@@ -141,3 +141,33 @@ describe("GroupService.listUserGroups", () => {
     expect(result).toEqual([]);
   });
 });
+
+describe("GroupService constructor", () => {
+  it("sets repo instance", () => {
+    const repo = {};
+    const service = new GroupService(repo);
+    expect(service.repo).toBe(repo);
+  });
+});
+
+describe("GroupService edge cases", () => {
+  it("createGroupe throws if deadline is missing", async () => {
+    await expect(
+      groupService.createGroupe({
+        name: "Test",
+        amount: 100,
+        description: "desc",
+        owner: mockOwnerId,
+      })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "Name, amount and deadline are required",
+    });
+  });
+
+  it("listUserGroups returns undefined if repo returns undefined", async () => {
+    mockGroupRepo.findByOwner.mockResolvedValue(undefined);
+    const result = await groupService.listUserGroups(mockOwnerId);
+    expect(result).toBeUndefined();
+  });
+});

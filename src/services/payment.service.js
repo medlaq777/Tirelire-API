@@ -11,6 +11,11 @@ class PaymentService {
   }
 
   async createPaymentIntent({ groupId, userId, amount }) {
+    if (!groupId || !userId || !amount) {
+      const e = new Error("groupId, userId, and amount are required");
+      e.status = 400;
+      throw e;
+    }
     const group = await this.groupRepo.findById(groupId);
     if (!group) {
       const e = new Error("Group not found");
@@ -34,26 +39,27 @@ class PaymentService {
   }
 
   async handleWebhook(event) {
+    if (!event || typeof event !== "object") return;
     const { type, data } = event;
+    if (!type) return;
 
-    if (type === "payment_intent.succeeded") {
-      const paymentIntent = data.object;
-      const userId = paymentIntent.metadata?.userId;
+    const paymentIntent = data?.object;
+    if (type === "payment_intent.succeeded" && paymentIntent) {
+      const userId = paymentIntent?.metadata?.userId;
       await ReliabilityService.updateScore(userId, "success");
 
       const payment = await this.paymentRepo.findByStripId(
-        paymentIntent.payment_intent
+        paymentIntent?.payment_intent
       );
       if (payment)
         await this.paymentRepo.updateStatus(payment._id, "succeeded");
     }
 
-    if (type === "payment_intent.payment_failed") {
-      const paymentIntent = data.object;
-      const userId = paymentIntent.metadata?.userId;
+    if (type === "payment_intent.payment_failed" && paymentIntent) {
+      const userId = paymentIntent?.metadata?.userId;
       await ReliabilityService.updateScore(userId, "fail");
 
-      const payment = await this.paymentRepo.findByStripeId(paymentIntent.id);
+      const payment = await this.paymentRepo.findByStripeId(paymentIntent?.id);
       if (payment) await this.paymentRepo.updateStatus(payment._id, "failed");
     }
   }

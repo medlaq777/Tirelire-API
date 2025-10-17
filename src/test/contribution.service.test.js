@@ -199,3 +199,55 @@ describe("ContributionService.listGroupRounds", () => {
     expect(result).toEqual(mockRoundsList);
   });
 });
+
+describe("ContributionService constructor", () => {
+  it("sets all repository and service instances", () => {
+    const contribRepo = {};
+    const groupRepo = {};
+    const reliabilityService = {};
+    const paymentRepo = {};
+    const service = new ContributionService(
+      contribRepo,
+      groupRepo,
+      reliabilityService,
+      paymentRepo
+    );
+    expect(service.contribRepo).toBe(contribRepo);
+    expect(service.groupRepo).toBe(groupRepo);
+    expect(service.rereliabilityService).toBe(reliabilityService);
+    expect(service.paymentRepo).toBe(paymentRepo);
+  });
+});
+
+describe("ContributionService edge cases", () => {
+  it("initContributionRounds throws if group.members is undefined", async () => {
+    mockGroupRepo.findById.mockResolvedValue({ _id: mockGroupId });
+    await expect(
+      contributionService.initContributionRounds(mockGroupId)
+    ).rejects.toThrow();
+  });
+
+  it("completeCurrentRound throws if payments is undefined", async () => {
+    mockContribRepo.findActiveByGroup.mockResolvedValue({
+      _id: "r1",
+      roundNumber: 1,
+    });
+    mockPaymentRepo.findByGroup.mockResolvedValue(undefined);
+    await expect(
+      contributionService.completeCurrentRound(mockGroupId)
+    ).rejects.toThrow();
+  });
+
+  it("completeCurrentRound throws if allRounds is undefined", async () => {
+    mockContribRepo.findActiveByGroup.mockResolvedValue({
+      _id: "r1",
+      roundNumber: 1,
+    });
+    mockPaymentRepo.findByGroup.mockResolvedValue([{ status: "succeeded" }]);
+    mockContribRepo.findByGroup.mockResolvedValue(undefined);
+    mockContribRepo.markCompleted.mockResolvedValue(true);
+    await expect(
+      contributionService.completeCurrentRound(mockGroupId)
+    ).rejects.toThrow();
+  });
+});

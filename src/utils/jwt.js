@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
-class jwtUtils {
+class JwtUtils {
   static generateToken(payload) {
     return jwt.sign(payload, config.jwtSecret, {
       expiresIn: config.jwtExpiresIn,
@@ -12,4 +12,4 @@ class jwtUtils {
     return jwt.verify(token, config.jwtSecret);
   }
 }
-export default jwtUtils;
+export default JwtUtils;

@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import * as canvasModule from "canvas";
 import * as faceapi from "face-api.js";
 const { Canvas, Image, ImageData } = canvasModule;

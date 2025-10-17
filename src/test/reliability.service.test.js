@@ -147,3 +147,17 @@ describe("ReliabilityService.getScore", () => {
     expect(score).toBe(mockInitialScore);
   });
 });
+
+describe("ReliabilityService constructor", () => {
+  it("sets default minScore and maxScore", () => {
+    const service = new ReliabilityService();
+    expect(service.minScore).toBe(0);
+    expect(service.maxScore).toBe(100);
+  });
+});
+
+describe("ReliabilityService edge cases", () => {
+  it("getScore throws if userId is missing", async () => {
+    await expect(reliabilityService.getScore()).rejects.toThrow();
+  });
+});

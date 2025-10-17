@@ -135,3 +135,34 @@ describe("TicketService.listAllTickets", () => {
     expect(result).toEqual(mockAllTickets);
   });
 });
+
+describe("TicketService constructor", () => {
+  it("sets repo instance", () => {
+    const repo = {};
+    const service = new TicketService(repo);
+    expect(service.repo).toBe(repo);
+  });
+});
+
+describe("TicketService edge cases", () => {
+  it("createTicket throws if subject and message are missing", async () => {
+    await expect(
+      ticketService.createTicket({ user: mockUserId, group: mockGroupId })
+    ).rejects.toMatchObject({
+      status: 400,
+      message: "Subject and message are required",
+    });
+  });
+
+  it("listUserTickets returns undefined if repo returns undefined", async () => {
+    mockTicketRepo.findByUser.mockResolvedValue(undefined);
+    const result = await ticketService.listUserTickets(mockUserId);
+    expect(result).toBeUndefined();
+  });
+
+  it("listAllTickets returns undefined if repo returns undefined", async () => {
+    mockTicketRepo.findAll.mockResolvedValue(undefined);
+    const result = await ticketService.listAllTickets();
+    expect(result).toBeUndefined();
+  });
+});

@@ -9,8 +9,9 @@ class KycController {
     try {
       const { fullname, nationalId } = req.body;
       const userId = req.user.id;
-      if (!req.files || !req.files["idImage"] || !req.files["selfie"]) {
+      if (!req.files?.idImage || !req.files?.selfie) {
         const e = new Error("required ID image and Selfie");
+        throw e;
       }
       const idBuf = req.files["idImage"][0].buffer;
       const selfieBuf = req.files["selfie"][0].buffer;

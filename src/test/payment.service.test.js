@@ -187,3 +187,118 @@ describe("PaymentService.handleWebhook", () => {
     expect(mockPaymentRepo.updateStatus).not.toHaveBeenCalled();
   });
 });
+
+describe("PaymentService.handleWebhook edge cases", () => {
+  it("should handle 'payment_intent.succeeded' when payment is not found", async () => {
+    const successfulEvent = {
+      type: "payment_intent.succeeded",
+      data: {
+        object: {
+          id: mockStripePaymentIntentId,
+          payment_intent: mockStripePaymentIntentId,
+          metadata: { userId: mockUserId },
+        },
+      },
+    };
+    mockPaymentRepo.findByStripId.mockResolvedValue(null);
+    await paymentService.handleWebhook(successfulEvent);
+    expect(mockPaymentRepo.updateStatus).not.toHaveBeenCalled();
+  });
+
+  it("should handle 'payment_intent.payment_failed' when payment is not found", async () => {
+    const failedEvent = {
+      type: "payment_intent.payment_failed",
+      data: {
+        object: {
+          id: mockStripePaymentIntentId,
+          metadata: { userId: mockUserId },
+        },
+      },
+    };
+    mockPaymentRepo.findByStripeId.mockResolvedValue(null);
+    await paymentService.handleWebhook(failedEvent);
+    expect(mockPaymentRepo.updateStatus).not.toHaveBeenCalled();
+  });
+
+  it("should handle webhook when event.data is missing", async () => {
+    const event = { type: "payment_intent.succeeded" };
+    await expect(paymentService.handleWebhook(event)).resolves.toBeUndefined();
+    expect(mockPaymentRepo.updateStatus).not.toHaveBeenCalled();
+  });
+
+  it("should handle webhook when event.data.object is missing", async () => {
+    const event = { type: "payment_intent.succeeded", data: {} };
+    await expect(paymentService.handleWebhook(event)).resolves.toBeUndefined();
+    expect(mockPaymentRepo.updateStatus).not.toHaveBeenCalled();
+  });
+});
+
+describe("PaymentService constructor", () => {
+  it("sets paymentRepo and groupRepo instances", () => {
+    const paymentRepo = {};
+    const groupRepo = {};
+    const service = new PaymentService(paymentRepo, groupRepo);
+    expect(service.paymentRepo).toBe(paymentRepo);
+    expect(service.groupRepo).toBe(groupRepo);
+    expect(service.stripe).toBeDefined();
+  });
+});
+
+describe("PaymentService edge cases", () => {
+  it("createPaymentIntent throws if groupId is missing", async () => {
+    await expect(
+      paymentService.createPaymentIntent({
+        userId: mockUserId,
+        amount: mockAmount,
+      })
+    ).rejects.toThrow();
+  });
+
+  it("createPaymentIntent throws if userId is missing", async () => {
+    mockGroupRepo.findById.mockResolvedValue(mockGroup);
+    await expect(
+      paymentService.createPaymentIntent({
+        groupId: mockGroupId,
+        amount: mockAmount,
+      })
+    ).rejects.toThrow();
+  });
+
+  it("createPaymentIntent throws if amount is missing", async () => {
+    mockGroupRepo.findById.mockResolvedValue(mockGroup);
+    await expect(
+      paymentService.createPaymentIntent({
+        groupId: mockGroupId,
+        userId: mockUserId,
+      })
+    ).rejects.toThrow();
+  });
+
+  it("handleWebhook does nothing if event is missing type", async () => {
+    await paymentService.handleWebhook({ data: {} });
+    expect(mockReliabilityService.updateScore).not.toHaveBeenCalled();
+  });
+
+  it("handleWebhook does nothing if event is undefined", async () => {
+    await paymentService.handleWebhook(undefined);
+    expect(mockReliabilityService.updateScore).not.toHaveBeenCalled();
+  });
+});
+
+// Stripe integration test (requires real Stripe test key)
+// Uncomment and set STRIPE_SECRET_KEY to run this integration test
+/*
+  import Stripe from "stripe";
+  describe("Stripe integration", () => {
+    it("creates a real payment intent with Stripe test key", async () => {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: 1000,
+        currency: "usd",
+        metadata: { test: "integration" },
+      });
+      expect(paymentIntent).toHaveProperty("id");
+      expect(paymentIntent).toHaveProperty("client_secret");
+    });
+  });
+  */
