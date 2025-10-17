@@ -1,5 +1,14 @@
 # Tirelire API
 
+## Code Quality & Test Coverage
+
+This project is analyzed with SonarQube.
+
+- **Coverage:** ![Coverage](https://img.shields.io/badge/Coverage-86.1%25-brightgreen)
+- **Quality Gate:** Passed
+
+For more details, see the SonarQube dashboard.
+
 ## Description
 
 Tirelire is a RESTful API built with Node.js for collaborative financial management. It enables users to create and manage savings groups, track contributions, handle payments, perform KYC verification, and manage support tickets, making group-based transactions simple and secure.
