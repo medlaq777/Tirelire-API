@@ -7,7 +7,7 @@ This project is analyzed with SonarQube.
 - **Coverage:** ![Coverage](https://img.shields.io/badge/Coverage-86.1%25-brightgreen)
 - **Quality Gate:** Passed
 
-(C:\YCODE\Tirelire\README.md)
+![SonarQube Analysis Screenshot](Screenshot%202025-10-17%20195619.png)
 
 For more details, see the SonarQube dashboard.
 
