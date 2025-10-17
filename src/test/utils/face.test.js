@@ -1,6 +1,4 @@
 import Face from "../../utils/face";
-import fs from "node:fs/promises";
-import path from "node:path";
 
 describe("Face Utility", () => {
   let face;
@@ -19,11 +17,9 @@ describe("Face Utility", () => {
     face.loadModels = jest.fn();
     face.bufferToImage = jest.fn();
     // Mock faceapi to return null
-    const mockDetect = jest
-      .fn()
-      .mockReturnValue({
-        withFaceLandmarks: () => ({ withFaceDescriptor: () => null }),
-      });
+    const mockDetect = jest.fn().mockReturnValue({
+      withFaceLandmarks: () => ({ withFaceDescriptor: () => null }),
+    });
     jest
       .spyOn(require("face-api.js"), "detectSingleFace")
       .mockImplementation(mockDetect);
