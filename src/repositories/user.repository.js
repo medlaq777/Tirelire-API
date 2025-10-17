@@ -17,6 +17,12 @@ class UserRepository {
     const count = await userModel.countDocuments({ email }).exec();
     return count > 0;
   }
+
+  async setKycVerified(userId, isVerified = true) {
+    return userModel
+      .findByIdAndUpdate(userId, { isKycVerified: !!isVerified }, { new: true })
+      .exec();
+  }
 }
 
 export default new UserRepository();

@@ -4,7 +4,6 @@ class ContributionController {
   async initRounds(req, res, next) {
     try {
       const groupId = req.body.groupId;
-      console.log(groupId);
       const rounds = await ContributionService.initContributionRounds(groupId);
       res.status(201).json({ message: "Rounds initialized", rounds });
     } catch (err) {

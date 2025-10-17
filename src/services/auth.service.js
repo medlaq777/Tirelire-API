@@ -69,7 +69,7 @@ class AuthService {
   }
   sanitize(user) {
     const { password, __v, ...rest } =
-      user && user.toObject ? user.toObject() : user;
+      user?.toObject?.() ?? user;
     return rest;
   }
 }

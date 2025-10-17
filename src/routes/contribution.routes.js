@@ -22,7 +22,7 @@ class ContributionRoutes {
     );
 
     router.get(
-      "/round",
+      "/round/:groupId",
       AuthMiddleware.protect,
       ContributionController.list.bind(ContributionController)
     );

@@ -1,14 +1,16 @@
 import Kyc from "../repositories/kyc.repository.js";
+import UserRepo from "../repositories/user.repository.js";
 import Crypto from "../utils/crypto.js";
 import Face from "../utils/face.js";
 import Config from "../config/config.js";
 import * as bcrypt from "bcryptjs";
 
 class KycService {
-  constructor(kyc, crypto, face) {
+  constructor(kyc, crypto, face, userRepo = null) {
     this.kyc = kyc;
     this.crypto = crypto;
     this.face = face;
+    this.userRepo = userRepo;
     this.threshold = Number.parseFloat(Config.keyFaceThreshold || "0.6");
   }
 
@@ -48,11 +50,23 @@ class KycService {
         return { kyc, auto: false, reason: "face_not_detected" };
       }
       const newStatus = result.match ? "approved" : "pending";
-      await this.kyc.updateStatus(kyc._id, newStatus, {
+      const updated = await this.kyc.updateStatus(kyc._id, newStatus, {
         method: "auto",
         score: result.distance,
         note: result.match ? "auto_approved" : "distance_above_threshold",
       });
+      // if auto-approved, mark user as KYC verified
+      if (
+        newStatus === "approved" &&
+        this.userRepo &&
+        this.userRepo.setKycVerified
+      ) {
+        try {
+          this.userRepo.setKycVerified(updated.user, true).catch(() => {});
+        } catch (e) {
+          console.error(e);
+        }
+      }
       return {
         kyc: await this.kyc.findById(kyc._id),
         auto: true,
@@ -74,7 +88,19 @@ class KycService {
       score: null,
       note: `by:${adminId} ${note}`,
     };
-    return this.kyc.updateStatus(kycId, status, verification);
+    const updated = await this.kyc.updateStatus(kycId, status, verification);
+    if (this.userRepo && this.userRepo.setKycVerified) {
+      try {
+        if (status === "approved") {
+          this.userRepo.setKycVerified(updated.user, true).catch(() => {});
+        } else if (status === "rejected") {
+          this.userRepo.setKycVerified(updated.user, false).catch(() => {});
+        }
+      } catch (e) {
+        /* swallow - keep KYC update authoritative */
+      }
+    }
+    return updated;
   }
 
   async isUserKycApproved(userId) {
@@ -84,4 +110,9 @@ class KycService {
 }
 
 export default KycService;
-export const kycService = new KycService(Kyc, new Crypto(), new Face());
+export const kycService = new KycService(
+  Kyc,
+  new Crypto(),
+  new Face(),
+  UserRepo
+);
