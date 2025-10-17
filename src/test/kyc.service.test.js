@@ -142,6 +142,39 @@ describe("Kyc.submitKyc", () => {
     expect(result.kyc).toBe(mockApprovedKyc);
   });
 
+  it("should cover .catch() branch for setKycVerified in auto-approve", async () => {
+    const mockApprovedKyc = { ...mockInitialKyc, status: "approved" };
+    mockCrypto.encryptAndSave
+      .mockResolvedValueOnce(mockIdMeta)
+      .mockResolvedValueOnce(mockSelfieMeta);
+    mockKycRepo.create.mockResolvedValue(mockInitialKyc);
+    mockCrypto.decryptFromFileMeta
+      .mockResolvedValueOnce(mockIdImgBuffer)
+      .mockResolvedValueOnce(mockSelfieBuffer);
+    mockFace.compareImages.mockResolvedValue({
+      match: true,
+      distance: 0.1,
+    });
+    mockKycRepo.findById.mockResolvedValue(mockApprovedKyc);
+    mockKycRepo.updateStatus.mockResolvedValue(mockApprovedKyc);
+    mockUserRepo.setKycVerified.mockImplementationOnce(() =>
+      Promise.reject(new Error("fail"))
+    );
+    const result = await Kyc.submitKyc({
+      userId: mockUserId,
+      fullname: mockFullname,
+      nationalId: mockNationalId,
+      idImgBuffer: mockIdImgBuffer,
+      selfieBuffer: mockSelfieBuffer,
+    });
+    expect(mockUserRepo.setKycVerified).toHaveBeenCalledWith(
+      mockApprovedKyc.user,
+      true
+    );
+    expect(result.auto).toBe(true);
+    expect(result.kyc).toBe(mockApprovedKyc);
+  });
+
   it("Kyc as pending whene face comparison distance too hight (no match)", async () => {
     mockCrypto.encryptAndSave.mockResolvedValue(mockIdMeta);
     mockKycRepo.create.mockResolvedValue(mockInitialKyc);
