@@ -12,6 +12,7 @@ class ContributionService {
   }
 
   async initContributionRounds(groupId) {
+    if (!groupId) throw new Error("groupId is required");
     const group = await this.groupRepo.findById(groupId);
     if (!group) throw new Error("Group not found");
     const members = group.members;

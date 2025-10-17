@@ -13,6 +13,14 @@ class PaymentRepository {
   async findByStripId(stripeId) {
     return Payment.findOne({ stripePaymentId: stripeId }).exec();
   }
+
+  async findByStripeId(stripeId) {
+    return Payment.findOne({ stripePaymentId: stripeId }).exec();
+  }
+
+  async findByGroup(groupId) {
+    return Payment.find({ group: groupId }).exec();
+  }
 }
 
 export default new PaymentRepository();

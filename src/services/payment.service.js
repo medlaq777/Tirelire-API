@@ -37,6 +37,7 @@ class PaymentService {
     const { type, data } = event;
 
     if (type === "payment_intent.succeeded") {
+      await ReliabilityService.updateScore(userId, "success");
       const paymentIntent = data.object;
       const payment = await this.paymentRepo.findByStripId(
         paymentIntent.payment_intent
@@ -46,6 +47,7 @@ class PaymentService {
     }
 
     if (type === "payment_intent.payment_failed") {
+      await ReliabilityService.updateScore(userId, "fail");
       const paymentIntent = data.object;
       const payment = await this.paymentRepo.findByStripeId(paymentIntent.id);
       if (payment) await this.paymentRepo.updateStatus(payment._id, "failed");

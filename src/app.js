@@ -8,6 +8,7 @@ import KycRoutes from "./routes/kyc.routes.js";
 import GroupRoutes from "./routes/group.routes.js";
 import PaymentRoutes from "./routes/payment.routes.js";
 import TicketRoutes from "./routes/ticket.routes.js";
+import ContributionRoutes from "./routes/contribution.routes.js";
 
 const app = express();
 app.use(cors());
@@ -19,6 +20,7 @@ app.use("/api", KycRoutes.build());
 app.use("/api", GroupRoutes.build());
 app.use("/api", PaymentRoutes.build());
 app.use("/api", TicketRoutes.build());
+app.use("/api", ContributionRoutes.build());
 app.use((err, res) => {
   console.log(err);
   const status = err.status || 500;

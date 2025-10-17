@@ -3,7 +3,8 @@ import ContributionService from "../services/contribution.service.js";
 class ContributionController {
   async initRounds(req, res, next) {
     try {
-      const { groupId } = req.body;
+      const groupId = req.body.groupId;
+      console.log(groupId);
       const rounds = await ContributionService.initContributionRounds(groupId);
       res.status(201).json({ message: "Rounds initialized", rounds });
     } catch (err) {
@@ -12,7 +13,7 @@ class ContributionController {
   }
   async completeRound(req, res, next) {
     try {
-      const { groupId } = req.body;
+      const groupId = req.body.groupId;
       const result = await ContributionService.completeCurrentRound(groupId);
       res.json(result);
     } catch (err) {
