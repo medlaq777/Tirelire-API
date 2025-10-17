@@ -1,5 +1,4 @@
 import NodeMailer from "nodemailer";
-import Config from "../config/config.js";
 
 class Mailer {
   constructor() {
@@ -26,4 +25,4 @@ class Mailer {
   }
 }
 
-export default new Mailer();
+export { Mailer };

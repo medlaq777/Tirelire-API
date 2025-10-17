@@ -1,5 +1,5 @@
 import controller from "../../src/controllers/contribution.controller.js";
-import ContributionService from "../../services/contribution.service.js";
+import ContributionService from "../../src/services/contribution.service.js";
 
 jest.mock("../../src/services/contribution.service.js");
 const mockService = ContributionService;

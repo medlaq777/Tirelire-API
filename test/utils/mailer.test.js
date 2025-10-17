@@ -1,17 +1,23 @@
-import Mailer from "../../src/utils/mailer.js";
-import NodeMailer from "nodemailer";
-
+process.env.MAIL_USER = "testuser@example.com";
+process.env.MAIL_PASS = "testpass";
 jest.mock("nodemailer");
 
 describe("Mailer", () => {
   let sendMailMock;
+  let MailerClass;
+  let mailerInstance;
+  let NodeMailer;
   beforeEach(() => {
+    jest.resetModules();
+    NodeMailer = require("nodemailer");
     sendMailMock = jest.fn().mockResolvedValue();
     NodeMailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+    MailerClass = require("../../src/utils/mailer.js").Mailer;
+    mailerInstance = new MailerClass();
   });
 
   it("should send mail successfully", async () => {
-    await Mailer.sendMail("to@example.com", "Subject", "Text");
+    await mailerInstance.sendMail("to@example.com", "Subject", "Text");
     expect(sendMailMock).toHaveBeenCalledWith({
       from: expect.stringContaining("TIRELIRE APP"),
       to: "to@example.com",
@@ -25,7 +31,7 @@ describe("Mailer", () => {
     const consoleSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    await Mailer.sendMail("to@example.com", "Subject", "Text");
+    await mailerInstance.sendMail("to@example.com", "Subject", "Text");
     expect(consoleSpy).toHaveBeenCalledWith(
       "Mail error :",
       expect.stringContaining("fail")
