@@ -33,10 +33,10 @@ Tirelire is a RESTful API built with Node.js for collaborative financial managem
 │   ├── middlewares/      # Express middlewares
 │   ├── routes/           # API routes
 │   ├── jobs/             # Scheduled jobs
+│   ├── uploads/          # Encrypted file uploads
 │   ├── utils/            # Utility functions
 │   └── app.js            # App entry point
 ├── test/                 # Unit and integration tests
-├── uploads/              # Encrypted file uploads
 ├── Dockerfile            # Docker configuration
 ├── package.json          # NPM dependencies
 ├── jest.config.mjs       # Jest configuration
@@ -47,7 +47,7 @@ Tirelire is a RESTful API built with Node.js for collaborative financial managem
 
 ### Prerequisites
 
-- Node.js (v16+ recommended)
+- Node.js (v20.19.5 recommended)
 - MongoDB
 - Docker (optional)
 
