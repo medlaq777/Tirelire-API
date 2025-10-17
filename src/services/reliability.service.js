@@ -1,10 +1,8 @@
 import User from "../models/user.model.js";
 
 class ReliabilityService {
-  constructor() {
-    this.maxScore = 100;
-    this.minScore = 0;
-  }
+  maxScore = 100;
+  minScore = 0;
 
   async updateScore(userId, action) {
     const user = await User.findById(userId);

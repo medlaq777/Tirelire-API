@@ -61,11 +61,6 @@ describe("ContributionService.initContributionRounds", () => {
   });
 
   it("should correctly sort members by reliability score and create rounds", async () => {
-    const mockRounds = [
-      { roundNumber: 1, beneficiary: "user-high" },
-      { roundNumber: 2, beneficiary: "user-medium" },
-      { roundNumber: 3, beneficiary: "user-low" },
-    ];
     mockGroupRepo.findById.mockResolvedValue(mockGroup);
 
     mockContribRepo.create.mockImplementation((data) =>
