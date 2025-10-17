@@ -9,6 +9,7 @@ import GroupRoutes from "./routes/group.routes.js";
 import PaymentRoutes from "./routes/payment.routes.js";
 import TicketRoutes from "./routes/ticket.routes.js";
 import ContributionRoutes from "./routes/contribution.routes.js";
+require("./jobs/scheduler");
 
 const app = express();
 
