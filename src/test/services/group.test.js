@@ -1,4 +1,4 @@
-import { GroupService } from "../services/group.service.js";
+import { GroupService } from "../../services/group.service.js";
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 const mockGroupRepo = {
   create: jest.fn(),

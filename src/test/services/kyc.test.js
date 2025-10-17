@@ -8,7 +8,7 @@ import {
   afterAll,
 } from "@jest/globals";
 import bcrypt from "bcryptjs";
-import KycService from "../services/kyc.service.js";
+import KycService from "../../services/kyc.service.js";
 let KycServiceInstance = KycService;
 let Kyc;
 
@@ -16,7 +16,7 @@ jest.mock("bcryptjs", () => ({
   hash: jest.fn(),
 }));
 
-jest.mock("../config/config.js", () => ({
+jest.mock("../../config/config.js", () => ({
   keyFaceThreshold: "0.6",
 }));
 
@@ -432,7 +432,7 @@ describe("KycService edge cases", () => {
 
   it("should fallback to default threshold if config is missing", () => {
     jest.resetModules();
-    const KycServiceLocal = require("../services/kyc.service.js").default;
+    const KycServiceLocal = require("../../services/kyc.service.js").default;
     const service = new KycServiceLocal(
       mockKycRepo,
       mockCrypto,

@@ -12,11 +12,11 @@ jest.mock("stripe", () => {
   return StripeMock;
 });
 
-jest.mock("../config/config.js", () => ({
+jest.mock("../../config/config.js", () => ({
   stripeSecret: "mock_stripe_secret_key",
 }));
 
-import { PaymentService } from "../services/payment.service.js";
+import { PaymentService } from "../../services/payment.service.js";
 
 const mockReliabilityService = {
   updateScore: jest.fn(),

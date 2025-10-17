@@ -1,15 +1,15 @@
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
 import bcrypt from "bcryptjs";
-import jwt from "../utils/jwt.js";
-import AuthService from "../services/auth.service.js";
+import jwt from "../../utils/jwt.js";
+import AuthService from "../../services/auth.service.js";
 
 jest.mock("bcryptjs", () => ({
   hash: jest.fn(),
   compare: jest.fn(),
 }));
 
-jest.mock("../utils/jwt.js", () => ({
+jest.mock("../../utils/jwt.js", () => ({
   generateToken: jest.fn(),
 }));
 
