@@ -16,7 +16,7 @@ describe("Face Utility", () => {
   it("should return null if getDescriptor fails (mock)", async () => {
     face.loadModels = jest.fn();
     face.bufferToImage = jest.fn();
-    // Mock faceapi to return null
+
     const mockDetect = jest.fn().mockReturnValue({
       withFaceLandmarks: () => ({ withFaceDescriptor: () => null }),
     });

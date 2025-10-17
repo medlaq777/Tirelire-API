@@ -240,6 +240,4 @@ describe("AuthService.sanitize edge cases", () => {
   });
 });
 
-describe("AuthService constructor", () => {
-  // Skipped: AuthService is a singleton, not a class export
-});
+describe("AuthService constructor", () => {});

@@ -5,7 +5,7 @@ import Config from "../../config/config.js";
 
 describe("Crypto Utility", () => {
   const testDir = path.resolve(__dirname, "test-uploads");
-  const testKey = "a".repeat(64); // 256-bit hex key
+  const testKey = "a".repeat(64);
   let cryptoUtil;
   let originalKey;
 
