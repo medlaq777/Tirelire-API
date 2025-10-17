@@ -284,21 +284,3 @@ describe("PaymentService edge cases", () => {
     expect(mockReliabilityService.updateScore).not.toHaveBeenCalled();
   });
 });
-
-// Stripe integration test (requires real Stripe test key)
-// Uncomment and set STRIPE_SECRET_KEY to run this integration test
-/*
-  import Stripe from "stripe";
-  describe("Stripe integration", () => {
-    it("creates a real payment intent with Stripe test key", async () => {
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: 1000,
-        currency: "usd",
-        metadata: { test: "integration" },
-      });
-      expect(paymentIntent).toHaveProperty("id");
-      expect(paymentIntent).toHaveProperty("client_secret");
-    });
-  });
-  */
