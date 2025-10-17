@@ -4,5 +4,5 @@ export default {
     "^.+\\.js$": "babel-jest",
   },
   transformIgnorePatterns: ["/node_modules/(?!(uuid)/)"],
-  testMatch: ["**/src/test/**/*.test.js"],
+  testMatch: ["**/test/**/*.test.js"],
 };
