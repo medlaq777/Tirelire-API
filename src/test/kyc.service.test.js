@@ -433,7 +433,6 @@ describe("KycService edge cases", () => {
   it("should fallback to default threshold if config is missing", () => {
     jest.resetModules();
     const KycServiceLocal = require("../services/kyc.service.js").default;
-    const fakeConfig = {};
     const service = new KycServiceLocal(
       mockKycRepo,
       mockCrypto,
