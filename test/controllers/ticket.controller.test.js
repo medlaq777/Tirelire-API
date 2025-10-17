@@ -1,7 +1,7 @@
-import controller from "../../controllers/ticket.controller.js";
-import TicketService from "../../services/ticket.service.js";
+import controller from "../../src/controllers/ticket.controller.js";
+import TicketService from "../../src/services/ticket.service.js";
 
-jest.mock("../../services/ticket.service.js");
+jest.mock("../../src/services/ticket.service.js");
 const mockService = TicketService;
 
 describe("TicketController", () => {

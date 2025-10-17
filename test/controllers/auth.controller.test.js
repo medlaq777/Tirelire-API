@@ -1,4 +1,4 @@
-import controller from "../../src/controllers/auth.controller.js";
+import controller from "../../src/controllers/auth.controller";
 const mockService = {
   register: jest.fn(),
   login: jest.fn(),

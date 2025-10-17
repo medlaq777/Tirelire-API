@@ -1,4 +1,4 @@
-import controller from "../../controllers/group.controller.js";
+import controller from "../../src/controllers/group.controller.js";
 const mockService = {
   createGroupe: jest.fn(),
   joinGroup: jest.fn(),

@@ -1,4 +1,4 @@
-import { TicketService } from "../../services/ticket.service.js";
+import { TicketService } from "../../src/services/ticket.service.js";
 const mockTicketRepo = {
   create: jest.fn(),
   updateStatus: jest.fn(),

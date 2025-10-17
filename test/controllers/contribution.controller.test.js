@@ -1,7 +1,7 @@
-import controller from "../../controllers/contribution.controller.js";
+import controller from "../../src/controllers/contribution.controller.js";
 import ContributionService from "../../services/contribution.service.js";
 
-jest.mock("../../services/contribution.service.js");
+jest.mock("../../src/services/contribution.service.js");
 const mockService = ContributionService;
 
 describe("ContributionController", () => {

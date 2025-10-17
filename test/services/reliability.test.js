@@ -1,7 +1,7 @@
-import ReliabilityService from "../../services/reliability.service.js";
-import User from "../../models/user.model.js";
+import ReliabilityService from "../../src/services/reliability.service.js";
+import User from "../../src/models/user.model.js";
 
-jest.mock("../../models/user.model.js", () => ({
+jest.mock("../../src/models/user.model.js", () => ({
   findById: jest.fn(),
 
   select: jest.fn().mockReturnThis(),

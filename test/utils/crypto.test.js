@@ -1,7 +1,7 @@
-import Crypto from "../../utils/crypto";
+import Crypto from "../../src/utils/crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import Config from "../../config/config.js";
+import Config from "../../src/config/config.js";
 
 describe("Crypto Utility", () => {
   const testDir = path.resolve(__dirname, "test-uploads");

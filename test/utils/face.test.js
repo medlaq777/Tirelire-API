@@ -1,4 +1,4 @@
-import Face from "../../utils/face";
+import Face from "../../src/utils/face";
 
 describe("Face Utility", () => {
   let face;

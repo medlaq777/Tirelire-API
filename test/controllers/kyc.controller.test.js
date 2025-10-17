@@ -1,4 +1,4 @@
-import controller from "../../controllers/kyc.controller.js";
+import controller from "../../src/controllers/kyc.controller.js";
 const mockService = {
   submitKyc: jest.fn(),
   adminApprove: jest.fn(),

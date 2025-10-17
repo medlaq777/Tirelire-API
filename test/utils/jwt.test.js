@@ -1,5 +1,5 @@
-import JwtUtils from "../../utils/jwt";
-import config from "../../config/config.js";
+import JwtUtils from "../../src/utils/jwt";
+import config from "../../src/config/config.js";
 
 describe("JwtUtils", () => {
   const testPayload = { userId: "123", role: "admin" };

@@ -1,4 +1,4 @@
-import ContributionService from "../../services/contribution.service.js";
+import ContributionService from "../../src/services/contribution.service.js";
 const mockContribRepo = {
   create: jest.fn(),
   findActiveByGroup: jest.fn(),

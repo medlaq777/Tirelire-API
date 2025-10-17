@@ -1,10 +1,10 @@
-import controller from "../../controllers/payment.controller.js";
-import PaymentService from "../../services/payment.service.js";
+import controller from "../../src/controllers/payment.controller.js";
+import PaymentService from "../../src/services/payment.service.js";
 
-jest.mock("../../services/payment.service.js");
+jest.mock("../../src/services/payment.service.js");
 const mockService = PaymentService;
 
-jest.mock("../../config/config.js", () => ({
+jest.mock("../../src/config/config.js", () => ({
   stripeSecret: "sk_test",
   stripeWebhookSecret: "whsec_test",
 }));

@@ -8,7 +8,7 @@ import {
   afterAll,
 } from "@jest/globals";
 import bcrypt from "bcryptjs";
-import KycService from "../../services/kyc.service.js";
+import KycService from "../../src/services/kyc.service.js";
 let KycServiceInstance = KycService;
 let Kyc;
 
@@ -16,7 +16,7 @@ jest.mock("bcryptjs", () => ({
   hash: jest.fn(),
 }));
 
-jest.mock("../../config/config.js", () => ({
+jest.mock("../../src/config/config.js", () => ({
   keyFaceThreshold: "0.6",
 }));
 
