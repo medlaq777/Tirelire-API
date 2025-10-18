@@ -6,6 +6,8 @@ const config = {
   fileEncryptionKey: process.env.FILE_ENCRYPTION_KEY,
   stripeSecret: process.env.STRIPE_SECRET_KEY,
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+  mailUser: process.env.MAIL_USER,
+  mailPass: process.env.MAIL_PASS,
 };
 
 export default config;
