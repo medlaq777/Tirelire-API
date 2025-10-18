@@ -19,6 +19,7 @@ jest.mock("stripe", () => {
 
 describe("PaymentController", () => {
   let req, res, next;
+  let consoleErrorSpy;
   beforeEach(() => {
     req = {
       body: {},
@@ -34,6 +35,11 @@ describe("PaymentController", () => {
     jest.clearAllMocks();
     mockService.createPaymentIntent.mockReset();
     mockService.handleWebhook.mockReset();
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it("createIntent: should return 201 and result", async () => {
